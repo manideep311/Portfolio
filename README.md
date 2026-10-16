@@ -137,6 +137,40 @@ random names; a 12-character minimum password length.
 
 ---
 
+## Deploy for free (PythonAnywhere)
+
+PythonAnywhere's free plan runs the whole site — app, SQLite database and
+uploaded images on its disk — with no card and no sleeping. Your address is
+`<username>.pythonanywhere.com` (custom domains need a paid plan), and you
+click **Run until 3 months from today** on the Web tab every three months.
+
+1. Create a free **Beginner** account at pythonanywhere.com.
+2. Open **Consoles → Bash** and run:
+   ```bash
+   git clone https://github.com/manideep311/Portfolio.git
+   bash ~/Portfolio/deploy/pythonanywhere_setup.sh
+   ```
+   This creates the virtualenv, installs `requirements-pythonanywhere.txt`,
+   writes `.env` with a fresh secret key, migrates, loads the résumé content and
+   collects static files. It finishes by printing your exact paths.
+3. Create your login with the `createsuperuser` command the script prints.
+4. **Web → Add a new web app → Manual configuration**, same Python version. Fill
+   in Source code, Working directory, Virtualenv, the two Static files rows
+   (`/static/` and `/media/`) and turn on **Force HTTPS**, as printed.
+5. Replace the WSGI configuration file with the three lines the script printed,
+   save, and press **Reload**.
+
+**Updating later:** push to GitHub, then in a Bash console:
+```bash
+bash ~/Portfolio/deploy/pythonanywhere_update.sh
+```
+It pulls, installs, migrates, collects static files and reloads the site.
+
+**Backups:** download `db.sqlite3` and the `media/` folder from the Files tab
+now and then. Settings live in `~/Portfolio/.env`; press Reload after editing.
+On the free plan outgoing email is restricted, so new contact messages may not
+be emailed to you — they are always saved in the admin.
+
 ## Deploy (Render + PostgreSQL + Cloudflare R2)
 
 Render's filesystem is wiped on every deploy, so uploads must go to object
@@ -193,6 +227,7 @@ templates/              base layout, 404/500, admin branding
 assets/css/             Tailwind entry + scrapbook component CSS (source)
 static/                 compiled CSS, JS, fonts (self-hosted), textures, icons
 seed/                   résumé PDF and portrait used by seed_portfolio
+deploy/                 PythonAnywhere setup and update scripts
 ```
 
 ## Content still needed from you

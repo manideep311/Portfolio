@@ -1,0 +1,7 @@
+# Lean install for PythonAnywhere's free plan: SQLite and uploads on local disk,
+# so the cloud-storage (boto3) and PostgreSQL packages are left out to save quota.
+Django>=5.2.18,<5.3
+Pillow>=11.0
+dj-database-url>=3.0
+whitenoise[brotli]>=6.9
+django-storages>=1.14
