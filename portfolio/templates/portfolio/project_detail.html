@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load notebook %}
+
+{% block title %}{{ project.title }} — {{ profile.name }}{% endblock %}
+{% block description %}{{ project.summary|truncatechars:160 }}{% endblock %}
+{% block og_title %}{{ project.title }} — case study by {{ profile.name }}{% endblock %}
+{% block og_description %}{{ project.summary|truncatechars:200 }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_image %}{% if project.featured_image %}{% if project.featured_image.url|slice:":4" == "http" %}{{ project.featured_image.url }}{% else %}{{ site_url }}{{ project.featured_image.url }}{% endif %}{% else %}{{ block.super }}{% endif %}{% endblock %}
+{% block robots %}{% if is_preview %}<meta name="robots" content="noindex, nofollow">{% else %}{{ block.super }}{% endif %}{% endblock %}
+
+{% block content %}
+{% if is_preview %}
+  <div class="preview-banner" role="status">
+    <strong>Draft preview.</strong> Only signed-in staff can see this page. Publish it in the admin to make it public.
+  </div>
+{% endif %}
+
+<article class="case" style="--accent:{{ project.accent }}" aria-labelledby="case-title">
+  <header class="case__head wrap">
+    <nav class="case__crumbs type" aria-label="Breadcrumb">
+      <a class="ink-link" href="{% url 'portfolio:home' %}#work">Project files</a> <span aria-hidden="true">/</span> <span aria-current="page">{{ project.title }}</span>
+    </nav>
+    <div class="case__intro mt-7 grid items-center gap-10 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-16">
+      <div class="case__titles">
+        <p class="kicker">Case study{% if project.year %} · {{ project.year }}{% endif %}</p>
+        <h1 class="case__title" id="case-title">{{ project.title }}</h1>
+        {% if project.tagline %}<p class="case__tagline">{{ project.tagline }}</p>{% endif %}
+        <div class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3.5">
+          {% if project.live_url %}<a class="btn" href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer">Visit live site ↗<span class="sr-only"> (opens in a new tab)</span></a>{% endif %}
+          {% if project.github_url %}<a class="btn btn--ghost" href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer">Source code ↗<span class="sr-only"> (opens in a new tab)</span></a>{% endif %}
+          {% if project.extra_link_url %}<a class="ink-link" href="{{ project.extra_link_url }}" target="_blank" rel="noopener noreferrer">{{ project.extra_link_label }} ↗<span class="sr-only"> (opens in a new tab)</span></a>{% endif %}
+        </div>
+      </div>
+      <figure class="case__cover polaroid">
+        <span class="tape" style="--tape-r:-5deg; top:-0.8rem; left:40%"></span>
+        <div class="polaroid__photo">{% project_visual project uid="case" eager=True %}</div>
+        <figcaption class="polaroid__caption">{% if project.featured_image %}{{ project.featured_image_alt|truncatechars:70 }}{% elif project.art == "generic" %}a placeholder sketch{% else %}how it works — a sketch{% endif %}</figcaption>
+      </figure>
+    </div>
+  </header>
+
+  <div class="case__body wrap mt-12 grid gap-10 md:mt-20 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12">
+    <div class="case__story paper-lined">
+      <h2 class="case__h2">The story</h2>
+      <p class="case__summary">{{ project.summary }}</p>
+      <div class="case__prose">{{ project.description|simple_format }}</div>
+    </div>
+
+    <aside class="grid content-start gap-7">
+      {% if project.contribution_list %}
+        <section class="case__card paper" aria-labelledby="built-title">
+          <h2 class="case__h3" id="built-title">What I built</h2>
+          <ul class="bullets" role="list">{% for item in project.contribution_list %}<li>{{ item }}</li>{% endfor %}</ul>
+        </section>
+      {% endif %}
+      {% if project.tech_list %}
+        <section class="case__card case__card--plain" aria-labelledby="stack-title">
+          <h2 class="case__h3" id="stack-title">Stack</h2>
+          <ul class="flex flex-wrap gap-1.5" role="list">{% for tech in project.tech_list %}<li class="chip">{{ tech }}</li>{% endfor %}</ul>
+        </section>
+      {% endif %}
+      {% if project.outcome_list %}
+        <section class="case__card case__card--plain" aria-labelledby="outcome-title">
+          <h2 class="case__h3" id="outcome-title">Outcomes</h2>
+          <ul class="checklist" role="list">{% for item in project.outcome_list %}<li>{{ item }}</li>{% endfor %}</ul>
+        </section>
+      {% endif %}
+      {% if project.note %}<p class="case__note hand">{{ project.note }}</p>{% endif %}
+    </aside>
+  </div>
+
+  {% if screenshots %}
+    <section class="case__gallery wrap" aria-labelledby="shots-title">
+      <h2 class="case__h2" id="shots-title">Screenshots <span class="case__count type">{{ screenshots|length }}</span></h2>
+      <ul class="mt-8 grid gap-9 md:grid-cols-2 lg:grid-cols-3" role="list" data-gallery>
+        {% for shot in screenshots %}
+          <li class="shot" style="--r:{% cycle '-1.6deg' '1.2deg' '-0.6deg' '1.8deg' %}">
+            <figure class="polaroid shot__polaroid">
+              <a class="shot__link" href="{{ shot.image.url }}" data-lightbox data-caption="{{ shot.caption|default:shot.alt_text }}">
+                <span class="polaroid__photo shot__photo">
+                  <img src="{{ shot.image.url }}" alt="{{ shot.alt_text }}"{% if shot.width %} width="{{ shot.width }}" height="{{ shot.height }}"{% endif %} loading="lazy" decoding="async">
+                </span>
+                <span class="sr-only">Open full-size screenshot</span>
+              </a>
+              {% if shot.caption %}<figcaption class="polaroid__caption">{{ shot.caption }}</figcaption>{% endif %}
+            </figure>
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+
+  <nav class="case__pager wrap" aria-label="More projects">
+    {% if previous_project %}<a class="case__pager-link" href="{{ previous_project.get_absolute_url }}"><span class="type">← previous</span><strong>{{ previous_project.title }}</strong></a>{% else %}<span></span>{% endif %}
+    <a class="ink-link case__pager-all" href="{% url 'portfolio:project_list' %}">all projects</a>
+    {% if next_project %}<a class="case__pager-link case__pager-link--next" href="{{ next_project.get_absolute_url }}"><span class="type">next →</span><strong>{{ next_project.title }}</strong></a>{% else %}<span></span>{% endif %}
+  </nav>
+</article>
+
+<dialog class="lightbox" data-lightbox-dialog aria-label="Screenshot viewer">
+  <form method="dialog" class="lightbox__bar">
+    <p class="lightbox__caption type" data-lightbox-caption></p>
+    <button class="lightbox__close" type="submit" aria-label="Close screenshot viewer">✕</button>
+  </form>
+  <img class="lightbox__img" alt="" data-lightbox-img>
+  <div class="lightbox__nav">
+    <button type="button" class="lightbox__btn" data-lightbox-prev aria-label="Previous screenshot">←</button>
+    <button type="button" class="lightbox__btn" data-lightbox-next aria-label="Next screenshot">→</button>
+  </div>
+</dialog>
+{% endblock %}

@@ -1,0 +1,198 @@
+/* ==========================================================================
+   Selected work — each project is a two-page spread
+   ========================================================================== */
+@layer components {
+  .section-head {
+    margin-bottom: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  }
+
+  .spreads {
+    display: grid;
+    gap: clamp(4rem, 3rem + 5vw, 7.5rem);
+  }
+
+  .spread {
+    position: relative;
+    display: grid;
+    gap: 3.5rem;
+    align-items: start;
+  }
+
+  .spread__visual {
+    position: relative;
+    max-width: 34rem;
+    width: 100%;
+    justify-self: center;
+  }
+  .spread__polaroid {
+    --rx: 0deg;
+    --ry: 0deg;
+    rotate: -2.5deg;
+    transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+    transition:
+      transform 400ms var(--ease-out),
+      box-shadow 400ms var(--ease-out);
+    will-change: auto;
+  }
+  .spread--flip .spread__polaroid {
+    rotate: 2.5deg;
+  }
+  .spread__polaroid:hover {
+    box-shadow: 0 34px 46px -26px rgb(60 45 20 / 0.6);
+  }
+  .spread__clip {
+    top: -1.5rem;
+    left: 2.2rem;
+    --clip-r: -8deg;
+  }
+  .spread__note {
+    position: relative;
+    margin: 1.6rem 0.5rem 0 auto;
+    max-width: 15rem;
+    font-size: 1.2rem;
+    color: var(--blue);
+    rotate: -3deg;
+    text-align: right;
+  }
+  .spread__note-arrow {
+    position: absolute;
+    top: -1.9rem;
+    left: -2.4rem;
+    width: 3rem;
+    scale: -1 1;
+    rotate: 8deg;
+  }
+
+  .spread__sheet {
+    position: relative;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.6rem);
+    background: var(--grain) 0 0 / 220px 220px, var(--paper-white);
+    box-shadow: var(--shadow-paper);
+  }
+  .spread__meta {
+    font-size: 0.82rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .spread__title {
+    margin-top: 0.4rem;
+    font-size: var(--step-3);
+    font-weight: 800;
+  }
+  .spread__title a {
+    text-decoration: none;
+    background: linear-gradient(var(--accent), var(--accent)) 0 92% / 0% 0.12em no-repeat;
+    transition: background-size 420ms var(--ease-out);
+  }
+  .spread__title a:hover {
+    background-size: 100% 0.12em;
+  }
+  .spread__tagline {
+    margin-top: 0.75rem;
+    font-family: var(--font-hand);
+    font-size: var(--step-1);
+    line-height: 1.3;
+    color: var(--accent);
+  }
+  .spread__summary {
+    margin-top: 0.9rem;
+    color: var(--ink-2);
+  }
+  .spread__label {
+    margin: 1.4rem 0 0.6rem;
+    font-family: var(--font-type);
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .spread__outcomes {
+    margin-top: 1.3rem;
+    font-family: var(--font-hand);
+    font-size: 1.1rem;
+  }
+
+  /* Per-project paper: same system, different personality */
+  .spread--vastra .spread__sheet {
+    background:
+      linear-gradient(90deg, transparent 2.2rem, var(--margin-red) 2.2rem, var(--margin-red) calc(2.2rem + 1px), transparent calc(2.2rem + 1px)),
+      repeating-linear-gradient(transparent 0 calc(1.75rem - 1px), var(--rule) calc(1.75rem - 1px) 1.75rem),
+      var(--grain) 0 0 / 220px 220px,
+      var(--paper-white);
+    padding-left: clamp(3rem, 2.4rem + 2vw, 3.8rem);
+  }
+  .spread--uniform .spread__sheet {
+    background: var(--grain) 0 0 / 220px 220px, #f1ead8;
+    border-top: 0;
+  }
+  .spread--uniform .spread__sheet::before {
+    content: 'CASE FILE';
+    position: absolute;
+    top: -1.65rem;
+    left: 1.5rem;
+    padding: 0.3rem 1rem 0.2rem;
+    background: var(--grain) 0 0 / 220px 220px, #f1ead8;
+    font-family: var(--font-type);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    border-radius: 6px 6px 0 0;
+    box-shadow: 0 -3px 6px -4px rgb(60 45 20 / 0.3);
+  }
+  .spread--cinema .spread__sheet {
+    -webkit-mask: radial-gradient(circle 9px at 0 50%, transparent 98%, #000) left / 51% 100% no-repeat,
+      radial-gradient(circle 9px at 100% 50%, transparent 98%, #000) right / 51% 100% no-repeat;
+    mask: radial-gradient(circle 9px at 0 50%, transparent 98%, #000) left / 51% 100% no-repeat,
+      radial-gradient(circle 9px at 100% 50%, transparent 98%, #000) right / 51% 100% no-repeat;
+    background:
+      linear-gradient(90deg, transparent 1.1rem, rgb(23 23 23 / 0.18) 1.1rem, transparent calc(1.1rem + 1.5px)) 0 0 / 100% 10px,
+      var(--grain) 0 0 / 220px 220px,
+      #fbf3ea;
+    box-shadow: none;
+    filter: drop-shadow(0 10px 12px rgb(60 45 20 / 0.18));
+  }
+  .spread--falcon .spread__sheet {
+    background:
+      linear-gradient(rgb(35 63 153 / 0.12) 1px, transparent 1px) 0 0 / 20px 20px,
+      linear-gradient(90deg, rgb(35 63 153 / 0.12) 1px, transparent 1px) 0 0 / 20px 20px,
+      var(--grain) 0 0 / 220px 220px,
+      #f3f5fb;
+  }
+
+  .work__all {
+    margin-top: clamp(3.5rem, 3rem + 3vw, 5.5rem);
+    text-align: center;
+  }
+  .empty-note {
+    font-size: var(--step-1);
+    color: var(--muted);
+  }
+
+  @media (min-width: 60rem) {
+    .spread {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      gap: clamp(2.5rem, 1rem + 4vw, 5rem);
+    }
+    .spread__visual {
+      position: sticky;
+      top: calc(var(--toolbar-h) + 2.5rem);
+      margin-top: 2rem;
+    }
+    .spread--flip .spread__visual {
+      order: 2;
+    }
+    .spread--flip .spread__note {
+      margin-left: 0.5rem;
+      margin-right: auto;
+      text-align: left;
+    }
+    .spread--flip .spread__note-arrow {
+      left: auto;
+      right: -2.4rem;
+      scale: 1 1;
+      rotate: -8deg;
+    }
+  }
+}

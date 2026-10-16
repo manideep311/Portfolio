@@ -1,0 +1,46 @@
+<svg class="art" viewBox="0 0 400 300" role="img" aria-labelledby="{{ uid }}-t" style="--accent:{{ project.accent }}">
+  <title id="{{ uid }}-t">Sketch, not a screenshot: a buyer's question is embedded, matching fabrics are retrieved from the live catalogue, and a language model writes the answer from them.</title>
+  <defs>
+    <pattern id="{{ uid }}-stripe" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="8" height="8" fill="#f3e3d3"/><rect width="3.2" height="8" class="acc" opacity=".75"/></pattern>
+    <pattern id="{{ uid }}-dots" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="#e4e9f6"/><circle cx="4.5" cy="4.5" r="1.8" fill="#233f99"/></pattern>
+    <pattern id="{{ uid }}-block" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#f6eadc"/><path d="M8 2l2 4 4 2-4 2-2 4-2-4-4-2 4-2z" class="acc"/></pattern>
+    <pattern id="{{ uid }}-check" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#efe7d6"/><rect width="5" height="5" fill="#1d2f6f" opacity=".6"/><rect x="5" y="5" width="5" height="5" fill="#1d2f6f" opacity=".6"/></pattern>
+  </defs>
+  <rect width="400" height="300" fill="#f8f3ea"/>
+
+  <path class="box" d="M18 20h152c6 0 9 3 9 9v28c0 6-3 9-9 9H54l-14 13 2-13H18c-6 0-9-3-9-9V29c0-6 3-9 9-9z"/>
+  <text x="22" y="40" class="t-hand">"Indigo cotton,</text>
+  <text x="22" y="57" class="t-hand">500 m in stock?"</text>
+
+  <path class="ink thin" d="M72 84c-4 14 4 22 0 34" stroke-dasharray="4 5"/>
+  <path class="ink thin" d="M65 112l7 9 7-9"/>
+  <rect x="16" y="126" width="120" height="36" rx="3" class="box"/>
+  <text x="25" y="142" class="t-type">embed( )</text>
+  <text x="25" y="155" class="t-type small">[.12 −.40 .88 …]</text>
+
+  <text x="178" y="98" class="t-type small muted">live catalogue</text>
+  <g class="ink">
+    <rect x="178" y="106" width="54" height="44" fill="url(#{{ uid }}-stripe)"/>
+    <rect x="240" y="106" width="54" height="44" fill="url(#{{ uid }}-dots)"/>
+    <rect x="302" y="106" width="54" height="44" fill="url(#{{ uid }}-block)"/>
+    <rect x="178" y="158" width="54" height="44" fill="url(#{{ uid }}-check)"/>
+    <rect x="240" y="158" width="54" height="44" fill="#2b3f8e"/>
+    <rect x="302" y="158" width="54" height="44" fill="#e9d9bf"/>
+  </g>
+  <path class="ink thin" d="M136 144c14 0 24 4 38 8" stroke-dasharray="4 5"/>
+
+  <path class="blue" d="M234 101c22-8 60-6 66 6 6 14-14 48-32 48-20 0-38-8-38-30 0-13 6-21 18-27"/>
+  <path class="blue" d="M234 154c20-6 62-4 62 12s-14 38-36 38-30-12-30-26 6-18 14-22"/>
+  <text x="304" y="226" class="t-hand blue-fill">top-k ✓</text>
+
+  <path class="ink thin" d="M262 214c-8 18-30 24-58 26" stroke-dasharray="4 5"/>
+  <path class="ink thin" d="M212 233l-9 7 10 5"/>
+  <rect x="128" y="224" width="72" height="34" rx="16" class="box"/>
+  <text x="147" y="246" class="t-type">LLM</text>
+  <path d="M186 230l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" class="acc"/>
+
+  <path class="ink thin" d="M128 242c-12 0-18 8-18 20" stroke-dasharray="4 5"/>
+  <path class="box" d="M10 266h100c5 0 8 3 8 8v10c0 5-3 8-8 8H10c-5 0-8-3-8-8v-10c0-5 3-8 8-8z"/>
+  <text x="12" y="284" class="t-hand">"Yes — 2 matches…"</text>
+  <text x="318" y="290" class="t-type small muted">fig. sketch</text>
+</svg>

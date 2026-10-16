@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load notebook %}
+{% block title %}Note received — {{ profile.name }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block content %}
+<section class="section" aria-labelledby="thanks-title">
+  <div class="wrap max-w-2xl">
+    <div class="letter paper">
+      <span class="tape" style="--tape-r:-6deg; top:-0.75rem; left:2rem"></span>
+      {% doodle "check" cls="thanks__check" draw=True weight=3.4 %}
+      <h1 class="letter__title" id="thanks-title">Got it — thank you.</h1>
+      <p class="letter__body hand">Your note is safely in my private inbox. I read every message personally.</p>
+      <p><a class="btn" href="{% url 'portfolio:home' %}">Back to the notebook</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,17 @@
+<svg class="art" viewBox="0 0 400 300" role="img" aria-labelledby="{{ uid }}-t" style="--accent:{{ project.accent }}">
+  <title id="{{ uid }}-t">Sketch placeholder for {{ project.title }}: a notebook page with a small hand-drawn neural network. Upload a featured image in the admin to replace it.</title>
+  <rect width="400" height="300" fill="#f8f3ea"/>
+  <g class="ink thin" opacity=".35">
+    <path d="M0 60h400M0 90h400M0 120h400M0 150h400M0 180h400M0 210h400M0 240h400M0 270h400"/>
+  </g>
+  <path d="M48 0v300" stroke="#b5462e" stroke-opacity=".4"/>
+  <g class="ink">
+    <path d="M120 100l80-30M120 100l80 30M120 100l80 90M120 160l80-90M120 160l80-30M120 160l80 30M120 160l80 90M120 220l80-30M120 220l80 30M200 70l80 60M200 130l80 0M200 190l80-60M200 130l80 60M200 70l80 120"/>
+    <circle cx="120" cy="100" r="12" class="box"/><circle cx="120" cy="160" r="12" class="box"/><circle cx="120" cy="220" r="12" class="box"/>
+    <circle cx="200" cy="70" r="12" class="box"/><circle cx="200" cy="130" r="12" class="box"/><circle cx="200" cy="190" r="12" class="box"/>
+    <circle cx="280" cy="130" r="14" class="acc"/><circle cx="280" cy="190" r="12" class="box"/>
+  </g>
+  <text x="300" y="134" class="t-hand">→ ✓</text>
+  <text x="64" y="44" class="t-hand" style="font-size:20px">{{ project.title|truncatechars:28 }}</text>
+  <text x="318" y="290" class="t-type small muted">fig. sketch</text>
+</svg>

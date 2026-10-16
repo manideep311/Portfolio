@@ -1,0 +1,83 @@
+{% load notebook %}
+<section id="journey" class="section journey" aria-labelledby="journey-title" data-section="journey">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <p class="kicker">04 · Journey</p>
+      <h2 class="section-title" id="journey-title">Experience, education &amp; receipts{% doodle "underline" draw=True weight=3 %}</h2>
+    </header>
+
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+      <div class="timeline-wrap">
+        {% if experience %}
+          <h3 class="journey__label type">Work experience</h3>
+          <ol class="timeline" role="list">
+            {% for job in experience %}
+              <li class="timeline__item reveal">
+                <span class="timeline__dot" aria-hidden="true"></span>
+                <p class="timeline__date type"><time datetime="{{ job.start_date|date:'Y-m' }}">{{ job.start_date|month_year }}</time> – {% if job.end_date %}<time datetime="{{ job.end_date|date:'Y-m' }}">{{ job.end_date|month_year }}</time>{% else %}Present{% endif %}</p>
+                <h4 class="timeline__title">{{ job.role }}</h4>
+                <p class="timeline__org">{{ job.organization }}{% if job.location %} · {{ job.location }}{% endif %}</p>
+                <ul class="bullets timeline__points" role="list">
+                  {% for point in job.highlight_list %}<li>{{ point }}</li>{% endfor %}
+                </ul>
+                {% if job.links.all %}
+                  <p class="mt-3.5 flex flex-wrap gap-x-5.5 gap-y-2">
+                    {% for link in job.links.all %}<a class="ink-link" href="{{ link.url }}" target="_blank" rel="noopener noreferrer">{{ link.label }} ↗<span class="sr-only"> (opens in a new tab)</span></a>{% endfor %}
+                  </p>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ol>
+        {% endif %}
+
+        {% if education %}
+          <h3 class="journey__label type">Education</h3>
+          <ol class="timeline" role="list">
+            {% for edu in education %}
+              <li class="timeline__item reveal">
+                <span class="timeline__dot{% if edu.in_progress %} timeline__dot--now{% endif %}" aria-hidden="true"></span>
+                <p class="timeline__date type"><time datetime="{{ edu.start_date|date:'Y-m' }}">{{ edu.start_date|month_year }}</time> – {% if edu.end_date %}<time datetime="{{ edu.end_date|date:'Y-m' }}">{{ edu.end_date|month_year }}</time>{% else %}Present{% endif %}</p>
+                <h4 class="timeline__title">{{ edu.degree }} · {{ edu.field }}</h4>
+                <p class="timeline__org">{{ edu.institution }}{% if edu.location %} · {{ edu.location }}{% endif %}</p>
+                {% if edu.score or edu.in_progress %}<p class="timeline__score hand">{% if edu.in_progress %}in progress{% if edu.score %} · {% endif %}{% endif %}{{ edu.score }}</p>{% endif %}
+                {% if edu.focus %}<p class="timeline__focus">{{ edu.focus }}</p>{% endif %}
+              </li>
+            {% endfor %}
+          </ol>
+        {% endif %}
+      </div>
+
+      <div class="grid content-start gap-10">
+        {% if certifications %}
+          <div class="receipts__certs paper reveal" style="--reveal-r:1.5deg">
+            {% include "portfolio/partials/clip.html" with cls="receipts__clip" %}
+            <h3 class="receipts__title">Certifications <span class="receipts__count type">{{ certifications|length }}</span></h3>
+            <ul class="certs" role="list">
+              {% for cert in certifications %}
+                <li class="cert">
+                  <span class="cert__seal" aria-hidden="true">{% doodle "check" weight=3.4 %}</span>
+                  <span class="cert__text">
+                    {% if cert.url %}<a class="cert__name" href="{{ cert.url }}" target="_blank" rel="noopener noreferrer">{{ cert.name }}<span class="sr-only"> — view credential (opens in a new tab)</span> <span aria-hidden="true">↗</span></a>{% else %}<span class="cert__name">{{ cert.name }}</span>{% endif %}
+                    <span class="cert__issuer type">{{ cert.issuer }}</span>
+                  </span>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {% if achievements %}
+          <div class="receipts__wins reveal" style="--delay:120ms; --reveal-r:-1.5deg">
+            <span class="tape" style="--tape-r:-4deg; top:-0.7rem; left:38%"></span>
+            <h3 class="receipts__title">Achievements &amp; leadership</h3>
+            <ul class="wins" role="list">
+              {% for win in achievements %}
+                <li><strong>{{ win.title }}</strong>{% if win.detail %} — {{ win.detail }}{% endif %}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>

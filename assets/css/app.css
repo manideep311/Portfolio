@@ -1,0 +1,46 @@
+/*
+ * Entry stylesheet. Build with:  npm run build:css
+ * Output: static/css/app.css (committed, so the server never needs Node).
+ *
+ * Tailwind handles layout & spacing utilities in the templates; the files
+ * imported below hold the hand-made scrapbook system (paper, tape, polaroids,
+ * doodles) that utilities alone can't express.
+ */
+@import 'tailwindcss' source(none);
+
+@source '../../templates';
+@source '../../portfolio/templates';
+@source '../../portfolio/templatetags';
+@source '../../static/js';
+
+@theme {
+  --color-paper: #f4f0e7;
+  --color-paper-warm: #efe8d9;
+  --color-paper-white: #fbf9f3;
+  --color-ink: #171717;
+  --color-ink-2: #3b3a36;
+  --color-muted: #57554f;
+  --color-pencil: #77756f;
+  --color-notebook: #233f99;
+  --color-notebook-soft: #4c64b5;
+  --color-beige: #d9ceb5;
+  --color-beige-deep: #c8baa0;
+
+  --font-display: 'Fraunces', 'Fraunces Fallback', Georgia, serif;
+  --font-sans: 'Instrument Sans', 'Instrument Sans Fallback', system-ui, sans-serif;
+  --font-hand: 'Kalam', 'Segoe Print', 'Bradley Hand', cursive;
+  --font-type: 'Special Elite', 'Special Elite Fallback', 'Courier New', monospace;
+
+  --ease-paper: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+}
+
+@import './fonts.css';
+@import './base.css';
+@import './frame.css';
+@import './decor.css';
+@import './hero.css';
+@import './work.css';
+@import './sections.css';
+@import './playground.css';
+@import './pages.css';

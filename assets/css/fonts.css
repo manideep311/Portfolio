@@ -1,0 +1,64 @@
+/* Self-hosted, latin-subset fonts (licences in static/fonts/licenses).
+   The "Fallback" faces are metric-matched local fonts so the swap to the web
+   font causes no visible layout shift. Overrides computed with fontTools. */
+
+@font-face {
+  font-family: 'Fraunces';
+  src: url('../fonts/fraunces-latin-soft-normal.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('../fonts/instrument-sans-latin-wght-normal.woff2') format('woff2-variations');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kalam';
+  src: url('../fonts/kalam-latin-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kalam';
+  src: url('../fonts/kalam-latin-700-normal.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Special Elite';
+  src: url('../fonts/special-elite-latin-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Fraunces Fallback';
+  src: local('Times New Roman'), local('Liberation Serif'), local('TimesNewRomanPSMT');
+  size-adjust: 118.38%;
+  ascent-override: 82.62%;
+  descent-override: 21.54%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Instrument Sans Fallback';
+  src: local('Arial'), local('Liberation Sans'), local('ArialMT');
+  size-adjust: 103.25%;
+  ascent-override: 93.95%;
+  descent-override: 24.21%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Special Elite Fallback';
+  src: local('Courier New'), local('Liberation Mono'), local('CourierNewPSMT');
+  size-adjust: 88.23%;
+  ascent-override: 79.69%;
+  descent-override: 33.65%;
+  line-gap-override: 0%;
+}

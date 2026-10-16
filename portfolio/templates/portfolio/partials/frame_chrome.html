@@ -1,0 +1,31 @@
+{% url 'portfolio:home' as home_url %}
+<div class="titlebar" aria-hidden="true">
+  <span class="titlebar__lights"><i></i><i></i><i></i></span>
+  <span class="titlebar__title">{{ profile.first_name|default:"My" }}'s Field Notebook</span>
+  <span class="titlebar__zoom"></span>
+</div>
+
+<header class="toolbar" data-toolbar>
+  <a class="toolbar__home" href="{{ home_url }}#top">{{ profile.initials|default:"·" }}<span class="sr-only"> — {{ profile.name }}, home</span></a>
+
+  <div class="address" aria-hidden="true">
+    <svg viewBox="0 0 16 16" class="address__icon"><path d="M3 2.5h7l3 3v8H3z M10 2.5v3h3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"></path></svg>
+    <span class="address__path">notebook://{{ profile.first_name|lower|default:"me" }}/</span><span class="address__section" data-address>{{ address|default:"hello" }}</span><span class="address__caret"></span>
+  </div>
+
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" data-menu-btn>
+    <span class="menu-btn__icon" aria-hidden="true"><i></i><i></i></span>
+    <span>Menu</span>
+  </button>
+
+  <nav class="tabs" id="site-nav" aria-label="Sections" data-nav>
+    <ul role="list">
+      <li><a href="{{ home_url }}#work" data-nav-link="work"><span class="tabs__num" aria-hidden="true">01</span>Work</a></li>
+      <li><a href="{{ home_url }}#about" data-nav-link="about"><span class="tabs__num" aria-hidden="true">02</span>About</a></li>
+      <li><a href="{{ home_url }}#toolkit" data-nav-link="toolkit"><span class="tabs__num" aria-hidden="true">03</span>Toolkit</a></li>
+      <li><a href="{{ home_url }}#journey" data-nav-link="journey"><span class="tabs__num" aria-hidden="true">04</span>Journey</a></li>
+      <li><a href="{{ home_url }}#playground" data-nav-link="playground"><span class="tabs__num" aria-hidden="true">05</span>Playground</a></li>
+      <li><a href="{{ home_url }}#contact" data-nav-link="contact"><span class="tabs__num" aria-hidden="true">06</span>Contact</a></li>
+    </ul>
+  </nav>
+</header>

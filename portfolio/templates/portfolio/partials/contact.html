@@ -1,0 +1,33 @@
+{% load notebook %}
+<section id="contact" class="section contact" aria-labelledby="contact-title" data-section="contact">
+  <div class="wrap grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-14">
+    <div class="letter paper reveal" style="--reveal-r:-1deg">
+      <span class="tape" style="--tape-r:-6deg; top:-0.75rem; left:2rem"></span>
+      {% if profile.availability %}<p class="stamp letter__stamp"><span class="stamp__inner"><span class="stamp__top">{{ profile.availability }}</span>{% if profile.location %}<span class="stamp__bottom">{{ profile.location }}</span>{% endif %}</span></p>{% endif %}
+      <p class="kicker">06 · Contact</p>
+      <h2 class="letter__title" id="contact-title">Let's make something that answers back.</h2>
+      <p class="letter__body hand">Dear future teammate, if you have a model that needs to meet real users, or a team that wants someone who'll own the whole loop from data to deployment, I'd love to hear about it.</p>
+
+      <div class="mt-7 flex flex-wrap items-center gap-x-3.5 gap-y-2.5">
+        <a class="letter__mail" href="mailto:{{ profile.email }}">{{ profile.email }}</a>
+        <button class="letter__copy" type="button" data-copy="{{ profile.email }}">copy</button>
+        <span class="letter__copied hand" data-copy-status aria-live="polite"></span>
+      </div>
+      {% if profile.show_phone and profile.phone %}<p class="letter__phone type"><a class="ink-link" href="tel:{{ profile.phone|cut:'-'|cut:' ' }}">{{ profile.phone }}</a></p>{% endif %}
+
+      <ul class="mt-5.5 flex flex-wrap gap-x-6.5 gap-y-2.5 text-[1.05rem]" role="list">
+        {% for link in social_links %}
+          <li><a class="ink-link" href="{{ link.url }}" target="_blank" rel="noopener noreferrer me">{{ link.label }} ↗<span class="sr-only"> (opens in a new tab)</span></a></li>
+        {% endfor %}
+        {% if profile.resume %}<li><a class="ink-link" href="{{ profile.resume.url }}" target="_blank" rel="noopener">Résumé (PDF) ↗<span class="sr-only"> (opens in a new tab)</span></a></li>{% endif %}
+      </ul>
+      <p class="letter__sign hand">— {{ profile.first_name }}{% doodle "heart" cls="letter__heart" weight=2.4 %}</p>
+    </div>
+
+    <div class="note-form paper-lined reveal" style="--delay:120ms; --reveal-r:1deg">
+      {% include "portfolio/partials/clip.html" with cls="note-form__clip" style="left:auto; right:2rem" %}
+      <h3 class="note-form__title">Or leave a note here</h3>
+      {% include "portfolio/partials/contact_form.html" %}
+    </div>
+  </div>
+</section>

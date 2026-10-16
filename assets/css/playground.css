@@ -1,0 +1,227 @@
+/* ==========================================================================
+   Playground — "Ask my notebook" retro terminal + embedding sketch
+   ========================================================================== */
+@layer components {
+  .pg__terminal {
+    border: 2px solid #2a2926;
+    border-radius: 10px;
+    background: #e6e2d8;
+    box-shadow: 6px 6px 0 rgb(23 23 23 / 0.85);
+    overflow: hidden;
+  }
+  .pg__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.8rem;
+    border-bottom: 2px solid #2a2926;
+    background: repeating-linear-gradient(180deg, rgb(255 255 255 / 0.5) 0 1px, transparent 1px 3px), linear-gradient(#ebe8e0, #d6d2c8);
+    font-family: var(--font-type);
+    font-size: 0.78rem;
+  }
+  .pg__bar i {
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 1.2px solid #55534d;
+    border-radius: 50%;
+    background: #f4f2ec;
+  }
+  .pg__bar span {
+    margin-left: auto;
+    color: var(--ink-2);
+  }
+  .pg__screen {
+    margin: 0.8rem;
+    padding: 1rem;
+    border-radius: 6px;
+    background: #16171c;
+    color: #e9e4d6;
+    font-family: var(--font-type);
+    font-size: 0.92rem;
+    box-shadow: inset 0 0 40px rgb(0 0 0 / 0.6);
+  }
+  .pg__log {
+    display: grid;
+    gap: 0.6rem;
+    min-height: 13rem;
+    max-height: 22rem;
+    overflow-y: auto;
+    padding-right: 0.3rem;
+    scrollbar-width: thin;
+  }
+  .pg__line {
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+  .pg__line--sys {
+    color: #9fa7c9;
+  }
+  .pg__line--q {
+    color: #f2c879;
+  }
+  .pg__line--a {
+    color: #e9e4d6;
+  }
+  .pg__line a {
+    color: #a9b8ff;
+  }
+  .pg__scores {
+    display: grid;
+    gap: 0.25rem;
+    margin-top: 0.3rem;
+    font-size: 0.8rem;
+    color: #b6b2a6;
+  }
+  .pg__score {
+    display: grid;
+    grid-template-columns: minmax(0, 9rem) 1fr 3rem;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .pg__score-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pg__bar-fill {
+    height: 0.45rem;
+    border-radius: 2px;
+    background: #7f93ff;
+    transform-origin: left;
+    transform: scaleX(var(--s, 0));
+    transition: transform 600ms var(--ease-out);
+  }
+  .pg__form {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px dashed rgb(233 228 214 / 0.25);
+  }
+  .pg__prompt {
+    color: #f2c879;
+  }
+  .pg__input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.5rem 0.2rem;
+    border: 0;
+    border-bottom: 1.5px solid rgb(233 228 214 / 0.4);
+    background: transparent;
+    color: #fff;
+    font: inherit;
+  }
+  .pg__input::placeholder {
+    color: #8f8a7e;
+  }
+  .pg__input:focus {
+    outline: none;
+    border-bottom-color: #f2c879;
+  }
+  .pg__input:focus-visible {
+    outline: 2px solid #f2c879;
+    outline-offset: 3px;
+  }
+  .pg__ask {
+    min-height: 2.6rem;
+    padding: 0.35rem 1rem;
+    border: 1.5px solid #f2c879;
+    border-radius: 3px;
+    background: transparent;
+    color: #f2c879;
+    font: inherit;
+    cursor: pointer;
+  }
+  .pg__ask:hover {
+    background: rgb(242 200 121 / 0.12);
+  }
+  .pg__ask:focus-visible {
+    outline-color: #f2c879;
+  }
+  .pg__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0 0.8rem 0.9rem;
+  }
+  .pg__chip {
+    min-height: 2.5rem;
+    padding: 0.3rem 0.8rem;
+    border: 1.5px solid #2a2926;
+    border-radius: 999px;
+    background: var(--paper-white);
+    font-family: var(--font-hand);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform var(--dur-1) var(--ease-out), background-color var(--dur-1);
+  }
+  .pg__chip:hover {
+    transform: translateY(-2px) rotate(-1deg);
+    background: #fff;
+  }
+
+  .pg__map {
+    position: relative;
+    margin: 0;
+    padding: 1rem 1rem 1.1rem;
+    rotate: 0.8deg;
+  }
+  .pg__svg {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 420 / 320;
+    overflow: visible;
+  }
+  .pg__caption {
+    display: grid;
+    gap: 0.15rem;
+    margin-top: 0.6rem;
+  }
+  .pg__caption .hand {
+    font-size: 1.2rem;
+    color: var(--blue);
+  }
+  .pg__caption .type {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .pg-dot {
+    fill: var(--paper-white);
+    stroke: var(--ink);
+    stroke-width: 1.6;
+    transition: r 300ms var(--ease-out), fill 300ms;
+  }
+  .pg-dot.is-hit {
+    fill: var(--blue);
+  }
+  .pg-group {
+    font-family: var(--font-hand);
+    font-size: 17px;
+    fill: var(--muted);
+  }
+  .pg-label {
+    font-family: var(--font-hand);
+    font-size: 13px;
+    fill: var(--blue);
+  }
+  .pg-link {
+    fill: none;
+    stroke: var(--blue);
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw-in 700ms var(--ease-out) forwards;
+  }
+  .pg-query {
+    fill: #f2c879;
+    stroke: var(--ink);
+    stroke-width: 1.6;
+  }
+
+  @media (min-width: 64rem) {
+    .pg__map {
+      margin-top: 2rem;
+    }
+  }
+}

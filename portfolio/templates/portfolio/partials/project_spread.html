@@ -1,0 +1,46 @@
+{% load notebook %}
+<article class="spread spread--{{ project.art }}{% if forloop.counter|divisibleby:2 %} spread--flip{% endif %}" id="work-{{ project.slug }}" style="--accent:{{ project.accent }}" aria-labelledby="title-{{ project.slug }}">
+  <div class="spread__visual reveal" style="--reveal-r:{% if forloop.counter|divisibleby:2 %}2deg{% else %}-2deg{% endif %}">
+    <a class="polaroid spread__polaroid" href="{{ project.get_absolute_url }}" tabindex="-1" aria-hidden="true" data-tilt>
+      {% if forloop.counter|divisibleby:2 %}{% include "portfolio/partials/clip.html" with cls="spread__clip" style="left:auto; right:2.2rem" %}{% else %}<span class="tape" style="--tape-r:-6deg; top:-0.8rem; left:42%"></span>{% endif %}
+      <span class="polaroid__photo">{% project_visual project uid="work" %}</span>
+      <span class="polaroid__caption">{{ project.title }}<small>{{ project.year }}{% if project.images.all %} · {{ project.images.all|length }} screenshot{{ project.images.all|length|pluralize }} inside{% endif %}</small></span>
+    </a>
+    {% if project.note %}
+      <p class="spread__note hand" aria-hidden="true">{{ project.note }}{% doodle "arrow-curve" cls="spread__note-arrow" draw=True weight=2.4 %}</p>
+    {% endif %}
+  </div>
+
+  <div class="spread__sheet reveal" style="--delay:120ms">
+    <p class="spread__meta type">No. {{ forloop.counter|stringformat:"02d" }}{% if project.year %} · {{ project.year }}{% endif %}</p>
+    <h3 class="spread__title" id="title-{{ project.slug }}"><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></h3>
+    {% if project.tagline %}<p class="spread__tagline">{{ project.tagline }}</p>{% endif %}
+    <p class="spread__summary">{{ project.summary }}</p>
+
+    {% if project.contribution_list %}
+      <h4 class="spread__label">What I built</h4>
+      <ul class="bullets" role="list">
+        {% for item in project.contribution_list|slice:":3" %}<li>{{ item }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if project.tech_list %}
+      <h4 class="spread__label">Stack</h4>
+      <ul class="flex flex-wrap gap-1.5" role="list">
+        {% for tech in project.tech_list %}<li class="chip">{{ tech }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if project.outcome_list %}
+      <ul class="checklist spread__outcomes" role="list" aria-label="Outcomes">
+        {% for outcome in project.outcome_list %}<li>{{ outcome }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+
+    <div class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3.5">
+      <a class="btn" href="{{ project.get_absolute_url }}">Read the case study<span class="sr-only">: {{ project.title }}</span> <span aria-hidden="true">→</span></a>
+      {% if project.live_url %}<a class="ink-link" href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer">Live site ↗<span class="sr-only"> for {{ project.title }} (opens in a new tab)</span></a>{% endif %}
+      {% if project.github_url %}<a class="ink-link" href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer">Source ↗<span class="sr-only"> for {{ project.title }} (opens in a new tab)</span></a>{% endif %}
+    </div>
+  </div>
+</article>

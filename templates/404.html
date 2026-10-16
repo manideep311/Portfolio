@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load notebook %}
+{% block title %}Page not found — {{ profile.name|default:"Portfolio" }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block content %}
+<section class="section" aria-labelledby="nf-title">
+  <div class="wrap max-w-2xl">
+    <div class="letter paper">
+      <span class="tape" style="--tape-r:5deg; top:-0.75rem; right:2rem"></span>
+      <p class="kicker">Error 404</p>
+      <h1 class="letter__title" id="nf-title">This page was torn out of the notebook.</h1>
+      <p class="letter__body hand">It may have moved, or it was never written. The good pages are still here.</p>
+      <p><a class="btn" href="{% url 'portfolio:home' %}">Back to the first page</a> <a class="ink-link" href="{% url 'portfolio:project_list' %}">see all projects</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

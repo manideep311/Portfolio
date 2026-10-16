@@ -1,0 +1,34 @@
+{% load notebook %}
+<section id="toolkit" class="section toolkit" aria-labelledby="toolkit-title" data-section="toolkit">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <p class="kicker">03 · Toolkit</p>
+      <h2 class="section-title" id="toolkit-title">What's in the pencil case{% doodle "underline" draw=True weight=3 %}</h2>
+      <p class="section-lede">Grouped by what each set of tools lets me build. No skill bars and no made-up percentages, just what I've used and where.</p>
+    </header>
+
+    <div class="kit">
+      {% for category in skill_categories %}
+        <article class="kit-panel kit-panel--{{ category.style }} reveal" style="--delay:{% cycle '0ms' '90ms' %}" aria-labelledby="kit-{{ category.pk }}">
+          {% if category.style == "stickers" %}<span class="tape" style="--tape-r:-5deg; top:-0.7rem; left:1.5rem"></span>{% elif category.style == "luggage" %}<span class="tape tape--blue" style="--tape-r:7deg; top:-0.6rem; right:2rem"></span>{% endif %}
+          <header class="kit-panel__head">
+            {% include "portfolio/partials/icon.html" with name=category.icon %}
+            <h3 class="kit-panel__title" id="kit-{{ category.pk }}">{{ category.title }}</h3>
+          </header>
+          {% if category.builds %}<p class="kit-panel__builds hand"><span aria-hidden="true">→ </span>{{ category.builds }}</p>{% endif %}
+
+          <ul class="kit-items kit-items--{{ category.style }}" role="list">
+            {% for skill in category.skills.all %}
+              <li class="kit-item{% if skill.is_minor %} kit-item--minor{% endif %}">
+                {% if category.style == "formula" %}<span class="kit-item__formula hand" aria-hidden="true">{% cycle "Ax = b" "P(A | B)" "μ, σ²" "∇f" "∑" %}</span>{% endif %}
+                <span class="kit-item__name">{{ skill.name }}</span>{% if skill.is_minor %}<span class="kit-item__tag">coursework</span>{% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+
+          {% if category.seen_in %}<p class="kit-panel__seen type">seen in: {{ category.seen_in }}</p>{% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>

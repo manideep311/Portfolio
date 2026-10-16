@@ -1,0 +1,38 @@
+<svg class="art" viewBox="0 0 400 300" role="img" aria-labelledby="{{ uid }}-t" style="--accent:{{ project.accent }}">
+  <title id="{{ uid }}-t">Sketch, not a screenshot: a rocket booster descending on a dashed trajectory toward a droneship, next to a small scatter plot of landed and failed outcomes split by a decision boundary.</title>
+  <defs>
+    <pattern id="{{ uid }}-grid" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0v16" fill="none" stroke="#233f99" stroke-opacity=".16" stroke-width="1"/></pattern>
+  </defs>
+  <rect width="400" height="300" fill="#eef1f8"/>
+  <rect width="400" height="300" fill="url(#{{ uid }}-grid)"/>
+
+  <!-- classifier doodle -->
+  <rect x="22" y="22" width="132" height="112" class="box"/>
+  <path class="ink thin" d="M36 120V34M36 120h108"/>
+  <path class="blue" d="M40 40c30 26 56 50 100 76" stroke-dasharray="6 5"/>
+  <g class="t-hand blue-fill" style="font-size:15px">
+    <text x="94" y="58">✓</text><text x="114" y="74">✓</text><text x="126" y="52">✓</text><text x="104" y="92">✓</text>
+  </g>
+  <g class="t-hand acc-fill" style="font-size:15px">
+    <text x="46" y="96">✗</text><text x="62" y="112">✗</text><text x="52" y="78">✗</text>
+  </g>
+  <text x="40" y="132" class="t-type small muted">features →</text>
+  <text x="30" y="16" class="t-hand" style="font-size:14px">landed?</text>
+
+  <!-- trajectory + booster -->
+  <path class="ink thin" d="M370 18c-40 40-80 70-112 132" stroke-dasharray="5 6"/>
+  <g transform="rotate(14 262 150)">
+    <rect x="252" y="96" width="20" height="96" rx="4" fill="#fffdf8" stroke="#171717" stroke-width="2"/>
+    <path class="ink" d="M252 108h20M252 178h20"/>
+    <path class="ink" d="M252 100l-9-6M272 100l9-6"/>
+    <path class="ink" d="M252 190l-12 18M272 190l12 18"/>
+    <path d="M256 194c2 14 4 22 6 30 2-8 4-16 6-30z" class="acc"/>
+  </g>
+
+  <!-- droneship + sea -->
+  <path class="box" d="M186 248h150l-10 16H196z"/>
+  <path class="ink thin" d="M248 248v-6h26v6"/>
+  <path class="blue" d="M10 278c16-6 30 6 46 0s30-6 46 0 30 6 46 0 30-6 46 0 30 6 46 0 30-6 46 0 30 6 46 0 26-4 38 0"/>
+  <text x="196" y="242" class="t-type small muted">droneship</text>
+  <text x="318" y="292" class="t-type small muted">fig. sketch</text>
+</svg>

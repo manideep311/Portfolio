@@ -1,0 +1,11 @@
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["portfolio/migrations", "node_modules", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "I", "UP", "DJ", "S"]
+ignore = ["E501", "DJ012"]
+
+[tool.ruff.lint.per-file-ignores]
+"portfolio/tests/*" = ["S101", "S105", "S106"]

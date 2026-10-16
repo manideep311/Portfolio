@@ -1,0 +1,40 @@
+{% load notebook %}
+<section id="about" class="section about" aria-labelledby="about-title" data-section="about">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <p class="kicker">02 · About</p>
+      <h2 class="section-title" id="about-title">The person behind the models{% doodle "underline" draw=True weight=3 %}</h2>
+    </header>
+
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,8fr)_minmax(0,3fr)] lg:gap-12">
+      <div class="about__page paper-lined reveal" style="--reveal-r:-1deg">
+        <span class="tape tape--blue" style="--tape-r:4deg; top:-0.7rem; right:2.5rem"></span>
+        {% for paragraph in profile.about_paragraphs %}
+          <p{% if forloop.first %} class="about__first"{% endif %}>{{ paragraph }}</p>
+        {% endfor %}
+        <p class="about__sign hand">— {{ profile.first_name }}</p>
+      </div>
+
+      <aside class="about__margin" aria-label="Margin notes">
+        {% if profile.location %}<p class="margin-note reveal" style="--reveal-r:-3deg">{% doodle "star" cls="margin-note__icon" weight=2.2 %}based in {{ profile.location }}</p>{% endif %}
+        {% for win in achievements|slice:":2" %}
+          <p class="margin-note reveal" style="--delay:{{ forloop.counter }}00ms; --reveal-r:2deg">{% doodle "sparkle" cls="margin-note__icon" weight=2 %}{{ win.title }} — {{ win.detail }}</p>
+        {% endfor %}
+        {% if current_education %}<p class="margin-note reveal" style="--delay:300ms">{% doodle "check" cls="margin-note__icon" weight=3 %}{{ current_education.degree }} · {{ current_education.score|default:"in progress" }}</p>{% endif %}
+      </aside>
+    </div>
+
+    {% if principles %}
+      <h3 class="about__subhead hand">how I like to work</h3>
+      <ol class="principles grid gap-6 md:grid-cols-2 lg:grid-cols-4" role="list">
+        {% for principle in principles %}
+          <li class="principle reveal" style="--delay:{{ forloop.counter0 }}00ms; --reveal-r:{% cycle '-2deg' '1.5deg' '-1deg' '2deg' %}">
+            <span class="principle__num type" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</span>
+            <h4 class="principle__title">{{ principle.title }}</h4>
+            <p>{{ principle.body }}</p>
+          </li>
+        {% endfor %}
+      </ol>
+    {% endif %}
+  </div>
+</section>

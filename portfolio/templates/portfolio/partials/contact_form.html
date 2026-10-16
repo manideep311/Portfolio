@@ -1,0 +1,21 @@
+<form class="grid gap-5" method="post" action="{% url 'portfolio:contact' %}">
+  {% csrf_token %}
+  {% if contact_form.non_field_errors %}
+    <div class="form-error" role="alert">{% for error in contact_form.non_field_errors %}<p>{{ error }}</p>{% endfor %}</div>
+  {% endif %}
+  {% for field in contact_form %}
+    {% if field.name == "website" %}
+      <div class="honeypot" aria-hidden="true">{{ field.label_tag }}{{ field }}</div>
+    {% else %}
+      <div class="field{% if field.errors %} field--error{% endif %}">
+        {{ field.label_tag }}
+        {{ field }}
+        {% for error in field.errors %}<p class="field-error" id="{{ field.auto_id }}_error">{{ error }}</p>{% endfor %}
+      </div>
+    {% endif %}
+  {% endfor %}
+  <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+    <button class="btn" type="submit">Send the note <span aria-hidden="true">✉</span></button>
+    <p class="contact-form__privacy type">Goes to a private inbox. Never shared, never published.</p>
+  </div>
+</form>

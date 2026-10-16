@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Contact — {{ profile.name }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex, follow">{% endblock %}
+
+{% block content %}
+<section class="section" aria-labelledby="contact-page-title">
+  <div class="wrap max-w-2xl">
+    <div class="note-form paper-lined">
+      {% include "portfolio/partials/clip.html" with cls="note-form__clip" style="left:auto; right:2rem" %}
+      <p class="kicker">Contact</p>
+      <h1 class="note-form__title" id="contact-page-title">Leave a note</h1>
+      <p class="contact-page__lede">Prefer email? Write to <a class="ink-link" href="mailto:{{ profile.email }}">{{ profile.email }}</a>.</p>
+      {% include "portfolio/partials/contact_form.html" %}
+    </div>
+  </div>
+</section>
+{% endblock %}

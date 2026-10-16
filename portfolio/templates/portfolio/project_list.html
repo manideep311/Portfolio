@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load notebook %}
+
+{% block title %}All projects — {{ profile.name }}{% endblock %}
+{% block description %}Every published project by {{ profile.name }}: NLP, generative AI, computer vision and applied machine learning.{% endblock %}
+
+{% block content %}
+<section class="section project-index" aria-labelledby="index-title">
+  <div class="wrap">
+    <header class="section-head">
+      <p class="kicker">The whole drawer</p>
+      <h1 class="section-title" id="index-title">Every project file{% doodle "underline" weight=3 %}</h1>
+      <p class="section-lede">{{ projects|length }} published project{{ projects|length|pluralize }}, newest thinking first.</p>
+    </header>
+
+    {% if projects %}
+      <ul class="grid gap-x-9 gap-y-11 sm:grid-cols-2 lg:grid-cols-3" role="list">
+        {% for project in projects %}
+          <li class="index-card grid content-start gap-4" style="--accent:{{ project.accent }}; --r:{% cycle '-1.2deg' '1deg' '-0.4deg' '1.4deg' %}">
+            <a class="polaroid index-card__link" href="{{ project.get_absolute_url }}">
+              <span class="polaroid__photo" aria-hidden="true">{% project_visual project uid="index" %}</span>
+              <span class="polaroid__caption"><strong class="index-card__title">{{ project.title }}</strong><small>{{ project.year }}{% if project.tech_list %} · {{ project.tech_list|slice:":3"|join:" · " }}{% endif %}</small></span>
+            </a>
+            <p class="index-card__summary">{{ project.summary|truncatechars:150 }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty-note hand">Nothing published yet.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

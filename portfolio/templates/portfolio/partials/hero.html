@@ -1,0 +1,146 @@
+{% load notebook %}
+<section class="hero" aria-labelledby="hero-name" data-hero>
+  {% doodle "star" cls="hero__star hero__star--1" weight=2.2 %}
+  {% doodle "spiral" cls="hero__spiral" weight=2 %}
+  {% doodle "sparkle" cls="hero__star hero__star--2" weight=2 %}
+
+  <!-- Identity card -->
+  <div class="hero__id" data-depth="1">
+    <span class="tape" style="--tape-r:-7deg; top:-0.75rem; left:2.2rem"></span>
+    <span class="tape tape--clear" style="--tape-r:5deg; top:-0.65rem; right:30%"></span>
+    <div class="id-card">
+      <div class="id-card__paper">
+        <p class="kicker">{{ profile.role }}{% if profile.location %} · {{ profile.location }}{% endif %}</p>
+        <h1 class="id-card__name" id="hero-name"><span>{{ profile.first_name }}</span> <span>{{ profile.last_name }}</span></h1>
+        {% if profile.focus %}<p class="id-card__focus hand">{{ profile.focus }}{% doodle "underline" cls="id-card__underline" draw=True weight=3 %}</p>{% endif %}
+        <p class="id-card__headline">{{ profile.headline }}</p>
+        <p class="id-card__intro">{{ profile.intro }}</p>
+        {% if profile.education_line %}<p class="id-card__edu type">{{ profile.education_line }}</p>{% endif %}
+        <div class="id-card__actions mt-6.5 flex flex-wrap items-center gap-x-4.5 gap-y-3.5">
+          <a class="btn" href="#work">Open the project files <span aria-hidden="true">↓</span></a>
+          {% if profile.resume %}<a class="btn btn--ghost" href="{{ profile.resume.url }}" target="_blank" rel="noopener">Résumé (PDF)<span class="sr-only"> — opens in a new tab</span></a>{% endif %}
+          <a class="ink-link id-card__mail" href="mailto:{{ profile.email }}">say hello</a>
+        </div>
+    {% if profile.availability %}
+      <p class="stamp hero__stamp"><span class="stamp__inner"><span class="stamp__top">{{ profile.availability }}</span>{% if profile.location %}<span class="stamp__bottom">{{ profile.location }}</span>{% endif %}</span></p>
+    {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Portrait polaroid (flips) -->
+  <div class="hero__portrait" data-depth="2.2">
+    <div class="portrait" data-portrait>
+      {% include "portfolio/partials/clip.html" with cls="portrait__clip" %}
+      <div class="portrait__card" data-flip-card>
+        <figure class="portrait__face portrait__front polaroid">
+          <div class="polaroid__photo portrait__photo">
+            {% if profile.portrait %}
+              <img src="{{ profile.portrait.url }}" alt="{{ profile.portrait_alt }}" width="{{ profile.portrait_width }}" height="{{ profile.portrait_height }}" decoding="async" loading="lazy">
+            {% else %}
+              <svg class="monogram" viewBox="0 0 200 200" role="img" aria-label="Hand-lettered monogram {{ profile.initials }} — a stand-in until a photo is added">
+                <rect width="200" height="200" fill="#f1ebdf"/>
+                <path d="M0 40h200M0 80h200M0 120h200M0 160h200" stroke="#233f99" stroke-opacity=".12"/>
+                <path class="monogram__circle" d="M42 52c40-30 120-26 132 14 12 44-26 92-80 92-48 0-74-30-70-62 3-26 28-46 64-48" fill="none" stroke="#233f99" stroke-width="3" stroke-linecap="round"/>
+                <text x="100" y="124" text-anchor="middle" class="monogram__letters">{{ profile.initials }}</text>
+                <text x="100" y="182" text-anchor="middle" class="monogram__small">{{ profile.location|default:"" }}</text>
+              </svg>
+            {% endif %}
+          </div>
+          <figcaption class="polaroid__caption">{% if profile.portrait %}that's me{% else %}{{ profile.first_name }}, mid-build{% endif %}</figcaption>
+        </figure>
+        <div class="portrait__face portrait__back polaroid" id="portrait-note">
+          <p class="portrait__note hand">
+            <strong>On the back:</strong>
+            {% if current_education %}Currently doing my {{ current_education.degree }} in {{ current_education.field }}{% if current_education.score %} ({{ current_education.score }}){% endif %}.{% endif %}
+            {% if profile.availability %}{{ profile.availability }}.{% endif %}
+            <span class="portrait__ps">P.S. the playground at the bottom answers questions about me.</span>
+          </p>
+        </div>
+      </div>
+      <button class="portrait__flip" type="button" aria-pressed="false" aria-controls="portrait-note" data-flip>
+        <span aria-hidden="true">↻</span> <span class="portrait__flip-label">flip me</span><span class="sr-only"> — read the note on the back of the polaroid</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Featured project polaroids -->
+  {% if hero_projects %}
+  <div class="hero__feature">
+    <p class="hero__start hand" aria-hidden="true">start here{% doodle "arrow-curve" cls="hero__start-arrow" draw=True weight=2.6 %}</p>
+    {% for project in hero_projects %}
+      <a class="hero-shot hero-shot--{{ forloop.counter }} polaroid" href="{{ project.get_absolute_url }}" data-depth="{% if forloop.first %}2.8{% else %}1.6{% endif %}" style="--accent:{{ project.accent }}">
+        {% if forloop.first %}{% include "portfolio/partials/clip.html" with cls="hero-shot__clip" %}{% else %}<span class="tape tape--blue" style="--tape-r:-12deg; --tape-w:4.5rem; top:-0.6rem; left:40%"></span>{% endif %}
+        <span class="polaroid__photo" aria-hidden="true">{% project_visual project uid="hero" eager=forloop.first %}</span>
+        <span class="polaroid__caption">{{ project.title }}<small>{% for tech in project.tech_list|slice:":3" %}#{{ tech|lower|cut:" " }} {% endfor %}</small></span>
+      </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Field notes: real numbers only -->
+  {% if field_notes %}
+  <div class="hero__notes notes-card paper-lined" data-depth="0.7">
+    <h2 class="notes-card__title">Field notes{% doodle "underline-double" cls="notes-card__underline" draw=True weight=2.6 %}</h2>
+    <ul role="list" class="notes-card__list">
+      {% for note in field_notes %}
+        <li>
+          <span class="notes-card__value">{{ note.value }}</span>
+          <span class="notes-card__label">{{ note.label }}</span>
+          {% doodle "check" cls="notes-card__check" draw=True weight=3.2 %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <!-- How I work loop -->
+  <div class="hero__loop loop-note" data-depth="1.4">
+    {% include "portfolio/partials/clip.html" with cls="loop-note__clip" %}
+    <p class="loop-note__title hand">how I work</p>
+    <svg class="loop" viewBox="0 0 280 196" aria-hidden="true" focusable="false">
+      <path class="loop__ring draw" d="M140 36c51 0 92 28 92 62s-41 62-92 62S48 132 48 98s41-62 92-62" pathLength="1"/>
+      <path class="loop__head" d="M149 29l11 7-11 8"/>
+      <path class="loop__head" d="M131 153l-11 7 11 8"/>
+      <g class="loop__labels">
+        <text x="140" y="24" text-anchor="middle">data</text>
+        <text x="236" y="58">features</text>
+        <text x="240" y="146">train</text>
+        <text x="140" y="190" text-anchor="middle">evaluate</text>
+        <text x="42" y="146" text-anchor="end">deploy</text>
+        <text x="44" y="58" text-anchor="end">log</text>
+      </g>
+      <text x="140" y="103" text-anchor="middle" class="loop__center">↺ repeat</text>
+    </svg>
+    <ol class="sr-only">
+      <li>Collect data</li><li>Engineer features</li><li>Train</li><li>Evaluate</li><li>Deploy</li><li>Log what happens, then repeat</li>
+    </ol>
+  </div>
+
+  <!-- Margin doodle robot + scroll cue -->
+  <div class="hero__bot">
+    <div class="bot" data-bot>
+      <button class="bot__btn" type="button" data-bot-btn aria-describedby="bot-say">
+        <span class="sr-only">Poke the margin doodle</span>
+        <svg class="bot__svg" viewBox="0 0 120 132" aria-hidden="true" focusable="false">
+          <path class="bot__ink" d="M60 8v14"/>
+          <circle class="bot__ink bot__antenna" cx="60" cy="7" r="4"/>
+          <rect class="bot__ink bot__head" x="22" y="22" width="76" height="58" rx="12"/>
+          <circle class="bot__ink bot__eye" cx="45" cy="50" r="11"/>
+          <circle class="bot__ink bot__eye" cx="75" cy="50" r="11"/>
+          <circle class="bot__pupil" cx="45" cy="50" r="4.5" data-pupil/>
+          <circle class="bot__pupil" cx="75" cy="50" r="4.5" data-pupil/>
+          <path class="bot__ink" d="M48 68c8 5 16 5 24 0"/>
+          <path class="bot__ink" d="M22 46h-8M98 46h8"/>
+          <path class="bot__ink bot__body" d="M36 84h48l6 34H30z"/>
+          <path class="bot__ink" d="M50 96h20M50 104h12"/>
+          <path class="bot__ink" d="M30 92l-14 14M90 92l14 14"/>
+        </svg>
+      </button>
+      <p class="bot__bubble hand" id="bot-say" aria-live="polite" data-bot-say>hi, I'm the margin doodle. poke me.</p>
+    </div>
+    {{ bot_lines|json_script:"bot-lines" }}
+    <a class="hero__next hand" href="#work">turn the page{% doodle "arrow-down" cls="hero__next-arrow" weight=2.6 %}</a>
+  </div>
+</section>

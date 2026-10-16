@@ -1,0 +1,49 @@
+{% load static notebook %}<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ profile.name }} — {{ profile.role }}{% if profile.focus %} · {{ profile.focus }}{% endif %}{% endblock %}</title>
+  <meta name="description" content="{% block description %}{% firstof profile.seo_description profile.headline %}{% endblock %}">
+  {% block robots %}<meta name="robots" content="index, follow">{% endblock %}
+  <link rel="canonical" href="{{ site_url }}{{ request.path }}">
+  <meta name="author" content="{{ profile.name }}">
+  <meta name="theme-color" content="#f4f0e7">
+
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="icon" href="{% static 'img/favicon-32.png' %}" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
+  <link rel="manifest" href="{% static 'site.webmanifest' %}">
+
+  {% absolute_static site_url 'img/og-image.jpg' as og_image %}
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:locale" content="en_IN">
+  <meta property="og:site_name" content="{{ profile.name }}">
+  <meta property="og:title" content="{% block og_title %}{{ profile.name }} — {{ profile.role }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{% firstof profile.seo_description profile.headline %}{% endblock %}">
+  <meta property="og:url" content="{{ site_url }}{{ request.path }}">
+  <meta property="og:image" content="{% block og_image %}{{ og_image }}{% endblock %}">
+  <meta property="og:image:alt" content="{{ profile.name }} — {{ profile.role }}, drawn as a page from a field notebook.">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preload" href="{% static 'fonts/fraunces-latin-soft-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{% static 'fonts/instrument-sans-latin-wght-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <script nonce="{{ request.csp_nonce }}">document.documentElement.classList.add('js')</script>
+  <script type="module" src="{% static 'js/site.js' %}"></script>
+  {% block head_extra %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="window" id="top">
+    {% include "portfolio/partials/frame_chrome.html" %}
+    <div class="page">
+      <main id="main" tabindex="-1">
+        {% block content %}{% endblock %}
+      </main>
+      {% include "portfolio/partials/footer.html" %}
+    </div>
+  </div>
+</body>
+</html>

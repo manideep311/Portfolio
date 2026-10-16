@@ -1,0 +1,42 @@
+<svg class="art" viewBox="0 0 400 300" role="img" aria-labelledby="{{ uid }}-t" style="--accent:{{ project.accent }}">
+  <title id="{{ uid }}-t">Sketch, not a screenshot: a film strip above a hand-written formula showing that a recommendation's match score is a weighted sum of genre, cast, director, rating and popularity.</title>
+  <rect width="400" height="300" fill="#f6efe6"/>
+
+  <!-- film strip -->
+  <g transform="rotate(-3 200 60)">
+    <rect x="-10" y="22" width="420" height="76" fill="#1f1d1b"/>
+    <g fill="#f6efe6">
+      <rect x="6" y="28" width="9" height="7" rx="1.5"/><rect x="34" y="28" width="9" height="7" rx="1.5"/><rect x="62" y="28" width="9" height="7" rx="1.5"/><rect x="90" y="28" width="9" height="7" rx="1.5"/><rect x="118" y="28" width="9" height="7" rx="1.5"/><rect x="146" y="28" width="9" height="7" rx="1.5"/><rect x="174" y="28" width="9" height="7" rx="1.5"/><rect x="202" y="28" width="9" height="7" rx="1.5"/><rect x="230" y="28" width="9" height="7" rx="1.5"/><rect x="258" y="28" width="9" height="7" rx="1.5"/><rect x="286" y="28" width="9" height="7" rx="1.5"/><rect x="314" y="28" width="9" height="7" rx="1.5"/><rect x="342" y="28" width="9" height="7" rx="1.5"/><rect x="370" y="28" width="9" height="7" rx="1.5"/>
+      <rect x="6" y="85" width="9" height="7" rx="1.5"/><rect x="34" y="85" width="9" height="7" rx="1.5"/><rect x="62" y="85" width="9" height="7" rx="1.5"/><rect x="90" y="85" width="9" height="7" rx="1.5"/><rect x="118" y="85" width="9" height="7" rx="1.5"/><rect x="146" y="85" width="9" height="7" rx="1.5"/><rect x="174" y="85" width="9" height="7" rx="1.5"/><rect x="202" y="85" width="9" height="7" rx="1.5"/><rect x="230" y="85" width="9" height="7" rx="1.5"/><rect x="258" y="85" width="9" height="7" rx="1.5"/><rect x="286" y="85" width="9" height="7" rx="1.5"/><rect x="314" y="85" width="9" height="7" rx="1.5"/><rect x="342" y="85" width="9" height="7" rx="1.5"/><rect x="370" y="85" width="9" height="7" rx="1.5"/>
+    </g>
+    <rect x="22" y="40" width="104" height="40" fill="#3b4f9a"/>
+    <circle cx="104" cy="52" r="7" fill="#f3d58a"/>
+    <path d="M22 80l30-24 22 16 18-12 34 20z" fill="#24346c"/>
+    <rect x="148" y="40" width="104" height="40" class="acc"/>
+    <path d="M200 46l4 9 10 1-7 7 2 10-9-5-9 5 2-10-7-7 10-1z" fill="#f6efe6"/>
+    <rect x="274" y="40" width="104" height="40" fill="#e7c98f"/>
+    <path d="M326 72c-12-8-17-13-16-18 1-5 7-6 10-3l6 5 6-5c3-3 9-2 10 3 1 5-4 10-16 18z" class="acc"/>
+  </g>
+
+  <!-- explainable score -->
+  <text x="24" y="140" class="t-hand" style="font-size:19px">match(a, b) =</text>
+  <g class="t-hand">
+    <text x="62" y="166">w₁ · genre</text>
+    <text x="62" y="188">+ w₂ · cast</text>
+    <text x="62" y="210">+ w₃ · director</text>
+    <text x="62" y="232">+ w₄ · rating</text>
+    <text x="62" y="254">+ w₅ · popularity</text>
+  </g>
+  <path class="blue" d="M48 154c-8 30-8 76 0 106"/>
+
+  <!-- ticket stub -->
+  <g transform="rotate(4 300 205)">
+    <path class="box" d="M232 152h136v26a10 10 0 0 0 0 20v62H232v-62a10 10 0 0 0 0-20z"/>
+    <path class="ink thin" d="M248 188h104" stroke-dasharray="3 4"/>
+    <text x="246" y="172" class="t-type small">ADMIT ONE</text>
+    <text x="246" y="212" class="t-hand" style="font-size:14px">because:</text>
+    <text x="246" y="231" class="t-hand" style="font-size:14px">same director ✓</text>
+    <text x="246" y="250" class="t-hand" style="font-size:14px">shared cast ✓</text>
+  </g>
+  <text x="24" y="288" class="t-type small muted">fig. sketch · weights not shown</text>
+</svg>

@@ -1,0 +1,45 @@
+<svg class="art" viewBox="0 0 400 300" role="img" aria-labelledby="{{ uid }}-t" style="--accent:{{ project.accent }}">
+  <title id="{{ uid }}-t">Sketch, not a screenshot: a camera frame at an entry point with detection boxes around a person's face, ID card and uniform, and a log strip noting attendance and dress-code compliance.</title>
+  <rect width="400" height="300" fill="#eef1ea"/>
+  <g class="ink" stroke-width="3">
+    <path d="M24 44V24h20M356 24h20v20M376 236v20h-20M44 256H24v-20"/>
+  </g>
+  <circle cx="44" cy="40" r="4" fill="#c0392b"/>
+  <text x="54" y="44" class="t-type small">REC · entry gate</text>
+
+  <!-- person (simple line figure) -->
+  <g class="ink">
+    <circle cx="200" cy="92" r="30" fill="#fffdf8"/>
+    <path d="M188 92h.5M211 92h.5" stroke-width="3.2"/>
+    <path d="M191 104c6 4 12 4 18 0"/>
+    <path d="M140 238c4-50 22-84 60-86 38 2 56 36 60 86" fill="#e3e8f2"/>
+    <path d="M186 154l14 22 14-22"/>
+    <path d="M200 176l-6 12 6 34 6-34z" class="acc-fill" stroke="#171717"/>
+    <rect x="216" y="184" width="26" height="34" rx="2" fill="#fffdf8"/>
+    <path d="M221 194h16M221 202h11"/>
+    <path d="M206 158l18 26M194 158l-2 6"/>
+  </g>
+
+  <!-- detection boxes -->
+  <g class="acc-stroke" stroke-dasharray="6 4">
+    <rect x="160" y="54" width="80" height="80" rx="4"/>
+    <rect x="210" y="178" width="38" height="46" rx="3"/>
+    <rect x="134" y="148" width="132" height="94" rx="4"/>
+  </g>
+  <g class="t-type small">
+    <rect x="160" y="36" width="72" height="17" class="acc"/>
+    <text x="166" y="48" class="on-acc">face ✓</text>
+    <rect x="250" y="178" width="52" height="17" class="acc"/>
+    <text x="255" y="190" class="on-acc">ID ✓</text>
+    <rect x="270" y="226" width="84" height="17" class="acc"/>
+    <text x="275" y="238" class="on-acc">uniform ✓</text>
+  </g>
+
+  <rect class="scan" x="40" y="60" width="320" height="2" style="fill:var(--accent)" opacity=".5"/>
+
+  <!-- log printout -->
+  <path class="box" d="M28 252h214l-6 7 6 7-6 7 6 7-6 6H28z"/>
+  <text x="38" y="266" class="t-type small">› attendance logged</text>
+  <text x="38" y="280" class="t-type small muted">› dress code: compliant</text>
+  <text x="318" y="290" class="t-type small muted">fig. sketch</text>
+</svg>

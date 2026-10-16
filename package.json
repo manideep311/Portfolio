@@ -1,0 +1,13 @@
+{
+  "name": "manideep-portfolio-css",
+  "private": true,
+  "description": "Builds the Tailwind stylesheet for the Django templates. Not needed at runtime.",
+  "scripts": {
+    "build:css": "tailwindcss -i ./assets/css/app.css -o ./static/css/app.css --minify",
+    "watch:css": "tailwindcss -i ./assets/css/app.css -o ./static/css/app.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "~4.3.3",
+    "tailwindcss": "~4.3.3"
+  }
+}

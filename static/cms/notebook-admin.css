@@ -1,0 +1,208 @@
+/* Notebook theme for Django Admin — same palette and type as the public site,
+   built on the admin's own CSS variables so every widget keeps working. */
+
+@font-face {
+  font-family: 'Fraunces';
+  src: url('../fonts/fraunces-latin-soft-normal.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('../fonts/instrument-sans-latin-wght-normal.woff2') format('woff2-variations');
+  font-weight: 400 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Special Elite';
+  src: url('../fonts/special-elite-latin-400-normal.woff2') format('woff2');
+  font-display: swap;
+}
+
+html[data-theme='light'],
+:root {
+  --primary: #233f99;
+  --secondary: #1b2f73;
+  --accent: #f2c879;
+  --primary-fg: #fbf9f3;
+
+  --body-fg: #171717;
+  --body-bg: #f4f0e7;
+  --body-quiet-color: #57554f;
+  --body-loud-color: #171717;
+
+  --header-color: #f4f0e7;
+  --header-branding-color: #fbf9f3;
+  --header-bg: #171717;
+  --header-link-color: #f4f0e7;
+
+  --breadcrumbs-fg: #e8e2d4;
+  --breadcrumbs-link-fg: #fff;
+  --breadcrumbs-bg: #233f99;
+
+  --link-fg: #233f99;
+  --link-hover-color: #0f1f55;
+  --link-selected-fg: #0f1f55;
+
+  --hairline-color: #ddd5c3;
+  --border-color: #cfc6b2;
+
+  --darkened-bg: #ece6d8;
+  --selected-bg: #e4e8f4;
+  --selected-row: #fff6dc;
+
+  --button-fg: #fbf9f3;
+  --button-bg: #171717;
+  --button-hover-bg: #233f99;
+  --default-button-bg: #233f99;
+  --default-button-hover-bg: #1b2f73;
+  --close-button-bg: #77756f;
+  --close-button-hover-bg: #3b3a36;
+  --delete-button-bg: #b3261e;
+  --delete-button-hover-bg: #8c1d17;
+
+  --object-tools-fg: #fbf9f3;
+  --object-tools-bg: #3b3a36;
+  --object-tools-hover-bg: #233f99;
+
+  --font-family-primary: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-family-monospace: 'Special Elite', ui-monospace, 'Courier New', monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --primary: #8ea2e8;
+    --secondary: #26304f;
+    --header-bg: #0f0f10;
+    --breadcrumbs-bg: #26304f;
+    --body-bg: #1b1a18;
+    --body-fg: #ece6d8;
+    --darkened-bg: #24221f;
+    --link-fg: #a9b8ff;
+    --link-hover-color: #d0d9ff;
+    --hairline-color: #3a3833;
+    --border-color: #4a473f;
+    --selected-row: #2c2a24;
+    --button-bg: #3b3a36;
+    --button-hover-bg: #4c64b5;
+    --default-button-bg: #4c64b5;
+  }
+}
+
+body {
+  background-image: radial-gradient(circle at 1px 1px, rgb(35 63 153 / 0.12) 1px, transparent 1.3px);
+  background-size: 22px 22px;
+}
+
+#header {
+  border-bottom: 3px solid #233f99;
+}
+.nb-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none !important;
+}
+.nb-brand__mark {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid currentColor;
+  border-radius: 6px;
+  rotate: -6deg;
+  font-size: 1.1rem;
+}
+.nb-brand__text {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 800;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+.nb-brand__tag {
+  padding: 0.1rem 0.45rem;
+  border: 1.5px solid #f2c879;
+  color: #f2c879;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  rotate: 4deg;
+}
+
+h1,
+#content h1,
+.module h2,
+.module caption {
+  font-family: 'Fraunces', Georgia, serif;
+}
+#content h1 {
+  font-weight: 800;
+  letter-spacing: -0.015em;
+}
+.module h2,
+.module caption {
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.module,
+.inline-group,
+#changelist .changelist-form-container,
+fieldset.module {
+  border-radius: 4px;
+}
+.dashboard .module,
+fieldset.module,
+.inline-group {
+  box-shadow: 0 1px 1px rgb(60 45 20 / 0.06), 0 8px 18px -14px rgb(60 45 20 / 0.35);
+}
+
+.button,
+input[type='submit'],
+input[type='button'],
+.submit-row input,
+a.button {
+  border-radius: 2px;
+  font-family: 'Special Elite', monospace;
+  letter-spacing: 0.04em;
+}
+
+.login #header {
+  border-bottom: 3px solid #233f99;
+}
+.login #container {
+  border: 1.5px solid #171717;
+  box-shadow: 6px 6px 0 #233f99;
+  rotate: -0.4deg;
+}
+
+/* Thumbnails and badges used in list/inline displays */
+.nb-thumb {
+  display: block;
+  border: 3px solid #fff;
+  border-bottom-width: 9px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.18);
+  background: #f1ece2;
+  rotate: -2deg;
+}
+.nb-thumb--empty {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 48px;
+  color: #77756f;
+}
+.nb-badge {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  border: 1.5px solid var(--body-quiet-color);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  color: var(--body-quiet-color);
+}
+.nb-badge--live {
+  border-color: #2f6f4e;
+  color: #2f6f4e;
+}

@@ -1,0 +1,24 @@
+{% load notebook %}
+<section id="work" class="section work" aria-labelledby="work-title" data-section="work">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <p class="kicker">01 · Selected work</p>
+      <h2 class="section-title" id="work-title">Project files{% doodle "underline" draw=True weight=3 %}</h2>
+      <p class="section-lede">Systems I built end to end, from the dataset to the interface people actually use. Each sketch is a diagram of how the thing works, not a screenshot.</p>
+    </header>
+
+    {% if featured_projects %}
+      <div class="spreads">
+        {% for project in featured_projects %}
+          {% include "portfolio/partials/project_spread.html" %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-note hand">New project files are being written up. Check back soon.</p>
+    {% endif %}
+
+    <p class="work__all">
+      <a class="btn btn--ghost" href="{% url 'portfolio:project_list' %}">Browse every project{% if published_count %} ({{ published_count }}){% endif %} <span aria-hidden="true">→</span></a>
+    </p>
+  </div>
+</section>

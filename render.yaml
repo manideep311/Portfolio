@@ -1,0 +1,72 @@
+# Render Blueprint: New → Blueprint → pick this repository.
+# Creates a PostgreSQL database and the Django web service.
+# Media uploads go to S3-compatible storage (Cloudflare R2 recommended):
+# fill the "sync: false" variables in the Render dashboard.
+
+databases:
+  - name: portfolio-db
+    databaseName: portfolio
+    user: portfolio
+    # Free Render databases expire; choose a paid plan for a long-lived site.
+    plan: free
+
+services:
+  - type: web
+    name: manideep-portfolio
+    runtime: python
+    # Free instances sleep when idle (slow first visit). Starter keeps it warm.
+    plan: free
+    buildCommand: ./build.sh
+    startCommand: gunicorn config.wsgi --workers 2 --timeout 60
+    healthCheckPath: /healthz/
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13.1"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: portfolio-db
+          property: connectionString
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: DJANGO_CSRF_TRUSTED_ORIGINS
+        value: "https://*.onrender.com"
+      - key: TRUST_X_FORWARDED_FOR
+        value: "1"
+      - key: SITE_URL
+        sync: false
+      - key: DJANGO_ADMIN_URL
+        sync: false
+      - key: SEED_ON_DEPLOY
+        value: "1"
+      # Object storage for uploads (survives deploys)
+      - key: AWS_STORAGE_BUCKET_NAME
+        sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_S3_ENDPOINT_URL
+        sync: false
+      - key: AWS_S3_CUSTOM_DOMAIN
+        sync: false
+      - key: AWS_S3_REGION_NAME
+        value: auto
+      - key: AWS_REQUEST_CHECKSUM_CALCULATION
+        value: when_required
+      - key: AWS_RESPONSE_CHECKSUM_VALIDATION
+        value: when_required
+      # Optional: email notifications for new contact messages
+      - key: CONTACT_NOTIFY_EMAIL
+        sync: false
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
+        sync: false

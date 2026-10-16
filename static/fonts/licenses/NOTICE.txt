@@ -1,0 +1,7 @@
+The font files in static/fonts/ are subsets of the originals published by
+Fontsource (fontsource.org): glyphs outside Latin, Latin-1, general
+punctuation, arrows and a few symbols were removed (Special Elite keeps
+ASCII plus a handful of accents and symbols) and hinting was stripped
+to reduce download size (pyftsubset, fontTools). No glyph designs were
+changed. Fraunces, Instrument Sans and Kalam remain under the SIL Open Font
+License 1.1; Special Elite remains under the Apache License 2.0.

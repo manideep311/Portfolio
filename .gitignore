@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+/media/
+/staticfiles/
+
+# Secrets
+.env
+
+# Node (only used to build the CSS)
+node_modules/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/

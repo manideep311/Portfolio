@@ -1,0 +1,25 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:"Notebook CMS" }}{% endblock %}
+
+{% block extrastyle %}{{ block.super }}
+<link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+<link rel="stylesheet" href="{% static 'cms/notebook-admin.css' %}">
+<meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block branding %}
+{% if request.resolver_match.url_name == "login" %}<h1 id="site-name">{% else %}<div id="site-name">{% endif %}
+  <a href="{% url 'admin:index' %}" class="nb-brand">
+    <span class="nb-brand__mark" aria-hidden="true">✎</span>
+    <span class="nb-brand__text">{{ site_header|default:"Notebook CMS" }}</span>
+    <span class="nb-brand__tag">CMS</span>
+  </a>
+{% if request.resolver_match.url_name == "login" %}</h1>{% else %}</div>{% endif %}
+{% if user.is_anonymous %}
+  {% include "admin/color_theme_toggle.html" %}
+{% endif %}
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
