@@ -24,17 +24,40 @@
       </aside>
     </div>
 
-    {% if principles %}
-      <h3 class="about__subhead hand">how I like to work</h3>
-      <ol class="principles grid gap-6 md:grid-cols-2 lg:grid-cols-4" role="list">
-        {% for principle in principles %}
-          <li class="principle reveal" style="--delay:{{ forloop.counter0 }}00ms; --reveal-r:{% cycle '-2deg' '1.5deg' '-1deg' '2deg' %}">
-            <span class="principle__num type" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</span>
-            <h4 class="principle__title">{{ principle.title }}</h4>
-            <p>{{ principle.body }}</p>
-          </li>
-        {% endfor %}
-      </ol>
-    {% endif %}
+    <h3 class="about__subhead hand">how I like to work</h3>
+    <div class="about__work grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:items-start lg:gap-12">
+      <figure class="loop-note about__loop reveal" style="--reveal-r:-1.5deg">
+        {% include "portfolio/partials/clip.html" with cls="loop-note__clip" %}
+        <figcaption class="loop-note__title hand">the loop</figcaption>
+        <svg class="loop" viewBox="0 0 280 196" aria-hidden="true" focusable="false">
+          <path class="loop__ring draw" d="M140 36c51 0 92 28 92 62s-41 62-92 62S48 132 48 98s41-62 92-62" pathLength="1"/>
+          <path class="loop__head" d="M149 29l11 7-11 8"/>
+          <path class="loop__head" d="M131 153l-11 7 11 8"/>
+          <g class="loop__labels">
+            <text x="140" y="24" text-anchor="middle">data</text>
+            <text x="236" y="58">features</text>
+            <text x="240" y="146">train</text>
+            <text x="140" y="190" text-anchor="middle">evaluate</text>
+            <text x="42" y="146" text-anchor="end">deploy</text>
+            <text x="44" y="58" text-anchor="end">log</text>
+          </g>
+          <text x="140" y="103" text-anchor="middle" class="loop__center">↺ repeat</text>
+        </svg>
+        <ol class="sr-only">
+          <li>Collect data</li><li>Engineer features</li><li>Train</li><li>Evaluate</li><li>Deploy</li><li>Log what happens, then repeat</li>
+        </ol>
+      </figure>
+      {% if principles %}
+        <ol class="principles grid gap-6 md:grid-cols-2" role="list">
+          {% for principle in principles %}
+            <li class="principle reveal" style="--delay:{{ forloop.counter0 }}00ms; --reveal-r:{% cycle '-2deg' '1.5deg' '-1deg' '2deg' %}">
+              <span class="principle__num type" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</span>
+              <h4 class="principle__title">{{ principle.title }}</h4>
+              <p>{{ principle.body }}</p>
+            </li>
+          {% endfor %}
+        </ol>
+      {% endif %}
+    </div>
   </div>
 </section>

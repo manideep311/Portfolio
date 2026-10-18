@@ -28,7 +28,7 @@ class HomePageTests(TempMediaMixin, TestCase):
         make_project(title="Future Launch", published_at=timezone.now() + timedelta(days=1))
         response = self.client.get("/")
         self.assertContains(response, 'id="work-live-featured"')
-        # Unfeatured but published: not in the gallery (the playground may still know it)
+        # Unfeatured but published: not in the gallery
         self.assertNotContains(response, 'id="work-live-unfeatured"')
         self.assertNotContains(response, "Secret Draft")
         self.assertNotContains(response, "Future Launch")
@@ -161,10 +161,18 @@ class DiscoveryTests(TestCase):
             with self.subTest(path=path):
                 self.assertEqual(self.client.get(path).status_code, 404)
 
-    def test_playground_knowledge_comes_from_published_content(self):
-        make_project(title="Visible Thing", summary="Uses embeddings.")
-        make_project(title="Invisible Thing", status=Project.Status.DRAFT)
+    def test_home_has_no_playground_bot_or_field_notes(self):
         response = self.client.get("/")
-        self.assertContains(response, 'id="notebook-notes"')
-        self.assertContains(response, "Visible Thing (")
-        self.assertNotContains(response, "Invisible Thing")
+        self.assertNotContains(response, 'id="playground"')
+        self.assertNotContains(response, "notebook-notes")
+        self.assertNotContains(response, "data-bot")
+        self.assertNotContains(response, "Field notes")
+        self.assertNotContains(response, "hero-shot")
+
+    def test_work_loop_sits_in_the_about_section(self):
+        body = self.client.get("/").content.decode()
+        about = body.index('id="about"')
+        loop = body.index('class="loop-note about__loop')
+        self.assertLess(about, loop)
+        self.assertLess(loop, body.index('id="toolkit"'))
+        self.assertIn("how I like to work", body)

@@ -12,13 +12,11 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_GET, require_http_methods
 
 from .forms import ContactForm
-from .knowledge import build_notes
 from .models import (
     Achievement,
     Certification,
     Education,
     Experience,
-    FieldNote,
     Principle,
     Project,
     SkillCategory,
@@ -33,34 +31,18 @@ def home(request):
     published_count = Project.objects.published().count()
     context = {
         "featured_projects": projects,
-        "hero_projects": projects[:2],
         "published_count": published_count,
         "skill_categories": SkillCategory.objects.prefetch_related("skills"),
         "experience": Experience.objects.filter(is_published=True).prefetch_related("links"),
         "education": education,
         "current_education": next((e for e in education if e.in_progress), None),
-        "bot_lines": _bot_lines(published_count),
         "address": "hello",
         "certifications": Certification.objects.all(),
         "achievements": Achievement.objects.all(),
-        "field_notes": FieldNote.objects.all(),
         "principles": Principle.objects.all(),
         "contact_form": ContactForm(),
-        "notes": build_notes(),
     }
     return render(request, "portfolio/home.html", context)
-
-
-def _bot_lines(published_count: int) -> list[str]:
-    lines = [
-        "Retrieval first, generation second. I was told to memorise that.",
-        "Psst… the polaroid flips.",
-        "Everything on this page is hand-drawn SVG and CSS. Even me.",
-        "Try the playground near the end. I'm much smarter on paper.",
-    ]
-    if published_count:
-        lines.insert(0, f"There are {published_count} project files below. The sketches are diagrams, not screenshots.")
-    return lines
 
 
 def project_list(request):
