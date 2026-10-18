@@ -1,8 +1,13 @@
+import tempfile
+from pathlib import Path
+from unittest import mock
+
 from django.contrib.auth.models import Group, User
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 
+from portfolio.management.commands import seed_portfolio
 from portfolio.models import ContactMessage, Project, SiteProfile
 from portfolio.permissions import EDITORS, INBOX
 
@@ -253,6 +258,16 @@ class ProjectWorkflowTests(TempMediaMixin, TestCase):
 
 
 class SeedCommandTests(TempMediaMixin, TestCase):
+    def setUp(self):
+        # The real résumé is git-ignored, so give the seed a stand-in PDF.
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        resume = Path(folder.name) / "resume.pdf"
+        resume.write_bytes(b"%PDF-1.4\n%%EOF\n")
+        patcher = mock.patch.object(seed_portfolio, "RESUME_PATH", resume)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
     def test_seed_is_idempotent_and_keeps_messages(self):
         ContactMessage.objects.create(name="Keep", email="k@example.com", message="Please keep me around.")
         call_command("seed_portfolio", verbosity=0)

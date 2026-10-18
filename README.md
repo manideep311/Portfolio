@@ -226,7 +226,7 @@ portfolio/
 templates/              base layout, 404/500, admin branding
 assets/css/             Tailwind entry + scrapbook component CSS (source)
 static/                 compiled CSS, JS, fonts (self-hosted), textures, icons
-seed/                   résumé PDF and portrait used by seed_portfolio
+seed/                   portrait (and your git-ignored résumé PDF) used by seed_portfolio
 deploy/                 PythonAnywhere setup and update scripts
 ```
 

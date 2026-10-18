@@ -20,3 +20,6 @@ node_modules/
 .DS_Store
 .idea/
 .vscode/
+
+# Personal résumé for seeding a fresh install (contains contact details)
+seed/*.pdf

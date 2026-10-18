@@ -30,6 +30,7 @@ from portfolio.models import (
     SocialLink,
 )
 
+# Optional and git-ignored: drop your current résumé here before seeding a fresh install.
 RESUME_PATH = Path(settings.BASE_DIR) / "seed" / "Manideep_Chittimodu_Resume.pdf"
 PORTRAIT_PATH = Path(settings.BASE_DIR) / "seed" / "portrait.jpg"
 PORTRAIT_ALT = (
@@ -49,7 +50,7 @@ PROFILE = {
     "location": "Hyderabad, India",
     "availability": "Open to Gen AI / ML roles",
     "email": "chittimodhu.manideep@gmail.com",
-    "phone": "+91-8309621807",
+    "phone": "",
     "show_phone": False,
     "seo_description": (
         "Manideep Chittimodu is a Gen AI / ML engineer in Hyderabad who builds NLP, deep-learning and "
