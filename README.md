@@ -1,7 +1,22 @@
 # Manideep Chittimodu — Field Notebook
 
-A scrapbook-style portfolio for a Gen AI / ML engineer, built with **Django**, a
-**private Django Admin CMS**, **Tailwind CSS** and a little vanilla JavaScript.
+[![CI](https://github.com/manideep311/Portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/manideep311/Portfolio/actions/workflows/ci.yml)
+
+A scrapbook-style portfolio for a Gen AI / ML engineer, run from a private Django Admin CMS.
+
+- **Live site:** <https://manideep311.pythonanywhere.com>
+- **Admin:** `/admin/` is private; login required, no public sign-up.
+
+Built with **Django 5.2**, **Tailwind CSS v4** and a little vanilla JavaScript.
+
+## Highlights
+
+- Django Admin CMS with a draft/published workflow and inline screenshot uploads per project.
+- Upload validation by content sniffing (not just file extensions), with images re-encoded to WebP.
+- Nonce-based Content Security Policy on every public page.
+- 72 automated tests, run by GitHub Actions on every push and pull request.
+- Lighthouse 100 on desktop and 97 on mobile at the last audit.
+- axe accessibility checks: 0 violations.
 
 Everything on the public site — profile, projects, screenshots, skills,
 experience, education, certifications, links, the résumé PDF — is edited in the
@@ -137,7 +152,9 @@ random names; a 12-character minimum password length.
 
 ---
 
-## Deploy for free (PythonAnywhere)
+## Deploy
+
+### Free: PythonAnywhere
 
 PythonAnywhere's free plan runs the whole site — app, SQLite database and
 uploaded images on its disk — with no card and no sleeping. Your address is
@@ -171,7 +188,7 @@ now and then. Settings live in `~/Portfolio/.env`; press Reload after editing.
 On the free plan outgoing email is restricted, so new contact messages may not
 be emailed to you — they are always saved in the admin.
 
-## Deploy (Render + PostgreSQL + Cloudflare R2)
+### Render + PostgreSQL + Cloudflare R2
 
 Render's filesystem is wiped on every deploy, so uploads must go to object
 storage. Cloudflare R2 has no egress fees and an S3-compatible API.
@@ -226,7 +243,7 @@ portfolio/
 templates/              base layout, 404/500, admin branding
 assets/css/             Tailwind entry + scrapbook component CSS (source)
 static/                 compiled CSS, JS, fonts (self-hosted), textures, icons
-seed/                   résumé PDF and portrait used by seed_portfolio
+seed/                   portrait (and your git-ignored résumé PDF) used by seed_portfolio
 deploy/                 PythonAnywhere setup and update scripts
 ```
 
@@ -236,7 +253,7 @@ deploy/                 PythonAnywhere setup and update scripts
 - **Source links** for Vastra, NextCinema and the Uniform Detection project. Only the Falcon 9 repository was linked in the résumé.
 - **Measured outcomes** (accuracy, latency, user numbers). None were in the résumé, so none are shown.
 - **Your final domain.** Set it in `SITE_URL` for canonical and Open Graph URLs.
-- The phone number is stored but hidden. Tick *Show phone* in the profile if you want it public.
+- **Phone number.** The seed leaves it blank. Add it in the profile and tick *Show phone* only if you want it public.
 
 ## Credits
 

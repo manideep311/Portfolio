@@ -30,6 +30,7 @@ from portfolio.models import (
     SocialLink,
 )
 
+# Optional and git-ignored: drop your current résumé here before seeding a fresh install.
 RESUME_PATH = Path(settings.BASE_DIR) / "seed" / "Manideep_Chittimodu_Resume.pdf"
 PORTRAIT_PATH = Path(settings.BASE_DIR) / "seed" / "portrait.jpg"
 PORTRAIT_ALT = (
@@ -49,7 +50,7 @@ PROFILE = {
     "location": "Hyderabad, India",
     "availability": "Open to Gen AI / ML roles",
     "email": "chittimodhu.manideep@gmail.com",
-    "phone": "+91-8309621807",
+    "phone": "",
     "show_phone": False,
     "seo_description": (
         "Manideep Chittimodu is a Gen AI / ML engineer in Hyderabad who builds NLP, deep-learning and "
@@ -139,7 +140,7 @@ PROJECTS = [
         "note": "retrieval first, generation second",
         "art": Project.Art.VASTRA,
         "accent": "#B5462E",
-        "live_url": "https://vastra-manideep.vercel.app/",
+        "live_url": "https://vastra-311.vercel.app/",
     },
     {
         "title": "AI Uniform Detection & Authentication",
@@ -174,7 +175,7 @@ PROJECTS = [
     {
         "title": "NextCinema",
         "slug": "nextcinema",
-        "year": "2025",
+        "year": "2026",
         "tagline": "Film recommendations that can explain themselves.",
         "summary": (
             "A movie discovery app on the TMDB API with a custom similarity-scoring recommendation model — genre, "
@@ -199,7 +200,7 @@ PROJECTS = [
         "note": "no black boxes",
         "art": Project.Art.CINEMA,
         "accent": "#A8322D",
-        "live_url": "https://manideep2.vercel.app/",
+        "live_url": "https://nextcinema-311.vercel.app/",
     },
     {
         "title": "Falcon 9 Landing Prediction",
