@@ -140,7 +140,7 @@ PROJECTS = [
         "note": "retrieval first, generation second",
         "art": Project.Art.VASTRA,
         "accent": "#B5462E",
-        "live_url": "https://vastra-manideep.vercel.app/",
+        "live_url": "https://vastra-311.vercel.app/",
     },
     {
         "title": "AI Uniform Detection & Authentication",
@@ -175,7 +175,7 @@ PROJECTS = [
     {
         "title": "NextCinema",
         "slug": "nextcinema",
-        "year": "2025",
+        "year": "2026",
         "tagline": "Film recommendations that can explain themselves.",
         "summary": (
             "A movie discovery app on the TMDB API with a custom similarity-scoring recommendation model — genre, "
@@ -200,7 +200,7 @@ PROJECTS = [
         "note": "no black boxes",
         "art": Project.Art.CINEMA,
         "accent": "#A8322D",
-        "live_url": "https://manideep2.vercel.app/",
+        "live_url": "https://nextcinema-311.vercel.app/",
     },
     {
         "title": "Falcon 9 Landing Prediction",
