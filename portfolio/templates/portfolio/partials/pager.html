@@ -1,0 +1,22 @@
+{% if current_page %}
+<nav class="pager" aria-label="Turn the page">
+  {% if prev_page %}
+    <a class="pager__turn pager__turn--prev" href="{{ prev_page.url }}" rel="prev" data-turn="prev">
+      <span class="pager__arrow" aria-hidden="true">←</span>
+      <span><span class="pager__hint">back to</span> {{ prev_page.title }}</span>
+    </a>
+  {% else %}<span></span>{% endif %}
+
+  <p class="pager__num type">
+    {% if current_page.key == "home" %}cover{% else %}p. {{ page_number|add:"-1"|stringformat:"02d" }} <span aria-hidden="true">/</span><span class="sr-only"> of </span> {{ page_count|add:"-1"|stringformat:"02d" }}{% endif %}<span class="pager__leaf" data-leaf-status aria-live="polite"></span>
+  </p>
+
+  {% if next_page %}
+    <a class="pager__turn pager__turn--next" href="{{ next_page.url }}" rel="next" data-turn="next">
+      <span><span class="pager__hint">next</span> {{ next_page.title }}</span>
+      <span class="pager__arrow" aria-hidden="true">→</span>
+    </a>
+    <a class="dog-ear" href="{{ next_page.url }}" tabindex="-1" aria-hidden="true" title="Turn the page" data-turn-ear></a>
+  {% else %}<span></span>{% endif %}
+</nav>
+{% endif %}

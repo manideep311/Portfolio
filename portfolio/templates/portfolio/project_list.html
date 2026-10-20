@@ -7,16 +7,17 @@
 {% block content %}
 <section class="section project-index" aria-labelledby="index-title">
   <div class="wrap">
-    <header class="section-head">
-      <p class="kicker">The whole drawer</p>
+    <header class="section-head" data-leaf="1">
+      <p class="kicker">01 · Work</p>
       <h1 class="section-title" id="index-title">Every project file{% doodle "underline" weight=3 %}</h1>
       <p class="section-lede">{{ projects|length }} published project{{ projects|length|pluralize }}, newest thinking first.</p>
     </header>
 
+    {% if projects|length > 4 %}<p class="kicker leaf-kicker" data-leaf="2">01 · Work, continued</p>{% endif %}
     {% if projects %}
-      <ul class="grid gap-x-9 gap-y-11 sm:grid-cols-2 lg:grid-cols-3" role="list">
+      <ul class="index-grid grid gap-x-9 gap-y-11 sm:grid-cols-2 lg:grid-cols-3" role="list">
         {% for project in projects %}
-          <li class="index-card grid content-start gap-4" style="--accent:{{ project.accent }}; --r:{% cycle '-1.2deg' '1deg' '-0.4deg' '1.4deg' %}">
+          <li data-leaf="{{ forloop.counter0|leaf_of:4 }}" class="index-card grid content-start gap-4" style="--accent:{{ project.accent }}; --r:{% cycle '-1.2deg' '1deg' '-0.4deg' '1.4deg' %}">
             <a class="polaroid index-card__link" href="{{ project.get_absolute_url }}">
               <span class="polaroid__photo" aria-hidden="true">{% project_visual project uid="index" %}</span>
               <span class="polaroid__caption"><strong class="index-card__title">{{ project.title }}</strong><small>{{ project.year }}{% if project.tech_list %} · {{ project.tech_list|slice:":3"|join:" · " }}{% endif %}</small></span>

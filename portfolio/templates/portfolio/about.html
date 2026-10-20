@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block title %}About — {{ profile.name }}{% endblock %}
+{% block description %}Who {{ profile.name|default:"I am" }} is, how I work and what I care about.{% endblock %}
+
+{% block content %}
+  {% include "portfolio/partials/about.html" %}
+{% endblock %}

@@ -17,9 +17,9 @@
 {% endif %}
 
 <article class="case" style="--accent:{{ project.accent }}" aria-labelledby="case-title">
-  <header class="case__head wrap">
+  <header class="case__head wrap" data-leaf="1">
     <nav class="case__crumbs type" aria-label="Breadcrumb">
-      <a class="ink-link" href="{% url 'portfolio:home' %}#work">Project files</a> <span aria-hidden="true">/</span> <span aria-current="page">{{ project.title }}</span>
+      <a class="ink-link" href="{% url 'portfolio:project_list' %}">Project files</a> <span aria-hidden="true">/</span> <span aria-current="page">{{ project.title }}</span>
     </nav>
     <div class="case__intro mt-7 grid items-center gap-10 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-16">
       <div class="case__titles">
@@ -41,13 +41,13 @@
   </header>
 
   <div class="case__body wrap mt-12 grid gap-10 md:mt-20 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12">
-    <div class="case__story paper-lined">
+    <div class="case__story paper-lined" data-leaf="2">
       <h2 class="case__h2">The story</h2>
       <p class="case__summary">{{ project.summary }}</p>
       <div class="case__prose">{{ project.description|simple_format }}</div>
     </div>
 
-    <aside class="grid content-start gap-7">
+    <aside class="case__aside grid content-start gap-7" data-leaf="3">
       {% if project.contribution_list %}
         <section class="case__card paper" aria-labelledby="built-title">
           <h2 class="case__h3" id="built-title">What I built</h2>
@@ -71,7 +71,7 @@
   </div>
 
   {% if screenshots %}
-    <section class="case__gallery wrap" aria-labelledby="shots-title">
+    <section class="case__gallery wrap" aria-labelledby="shots-title" data-leaf="4">
       <h2 class="case__h2" id="shots-title">Screenshots <span class="case__count type">{{ screenshots|length }}</span></h2>
       <ul class="mt-8 grid gap-9 md:grid-cols-2 lg:grid-cols-3" role="list" data-gallery>
         {% for shot in screenshots %}
@@ -91,7 +91,7 @@
     </section>
   {% endif %}
 
-  <nav class="case__pager wrap" aria-label="More projects">
+  <nav class="case__pager wrap" aria-label="More projects" data-leaf="{% if screenshots %}4{% else %}3{% endif %}">
     {% if previous_project %}<a class="case__pager-link" href="{{ previous_project.get_absolute_url }}"><span class="type">← previous</span><strong>{{ previous_project.title }}</strong></a>{% else %}<span></span>{% endif %}
     <a class="ink-link case__pager-all" href="{% url 'portfolio:project_list' %}">all projects</a>
     {% if next_project %}<a class="case__pager-link case__pager-link--next" href="{{ next_project.get_absolute_url }}"><span class="type">next →</span><strong>{{ next_project.title }}</strong></a>{% else %}<span></span>{% endif %}

@@ -27,28 +27,53 @@ from .models import (
 logger = logging.getLogger(__name__)
 
 
-def home(request):
-    projects = list(Project.objects.featured().prefetch_related("images"))
+def _education_context():
     education = list(Education.objects.all())
+    return {"education": education, "current_education": next((e for e in education if e.in_progress), None)}
+
+
+def home(request):
+    projects = list(Project.objects.featured().prefetch_related("images")[:2])
     published_count = Project.objects.published().count()
     context = {
-        "featured_projects": projects,
-        "hero_projects": projects[:2],
+        **_education_context(),
+        "hero_projects": projects,
         "published_count": published_count,
-        "skill_categories": SkillCategory.objects.prefetch_related("skills"),
-        "experience": Experience.objects.filter(is_published=True).prefetch_related("links"),
-        "education": education,
-        "current_education": next((e for e in education if e.in_progress), None),
         "bot_lines": _bot_lines(published_count),
-        "address": "hello",
-        "certifications": Certification.objects.all(),
-        "achievements": Achievement.objects.all(),
         "field_notes": FieldNote.objects.all(),
-        "principles": Principle.objects.all(),
-        "contact_form": ContactForm(),
-        "notes": build_notes(),
+        "address": "hello",
     }
     return render(request, "portfolio/home.html", context)
+
+
+def about(request):
+    context = {
+        **_education_context(),
+        "principles": Principle.objects.all(),
+        "achievements": Achievement.objects.all(),
+        "address": "about",
+    }
+    return render(request, "portfolio/about.html", context)
+
+
+def toolkit(request):
+    context = {"skill_categories": SkillCategory.objects.prefetch_related("skills"), "address": "toolkit"}
+    return render(request, "portfolio/toolkit.html", context)
+
+
+def journey(request):
+    context = {
+        **_education_context(),
+        "experience": Experience.objects.filter(is_published=True).prefetch_related("links"),
+        "certifications": Certification.objects.all(),
+        "achievements": Achievement.objects.all(),
+        "address": "journey",
+    }
+    return render(request, "portfolio/journey.html", context)
+
+
+def playground(request):
+    return render(request, "portfolio/playground.html", {"notes": build_notes(), "address": "playground"})
 
 
 def _bot_lines(published_count: int) -> list[str]:
@@ -56,10 +81,10 @@ def _bot_lines(published_count: int) -> list[str]:
         "Retrieval first, generation second. I was told to memorise that.",
         "Psst… the polaroid flips.",
         "Everything on this page is hand-drawn SVG and CSS. Even me.",
-        "Try the playground near the end. I'm much smarter on paper.",
+        "Try the playground, page six. I'm much smarter on paper.",
     ]
     if published_count:
-        lines.insert(0, f"There are {published_count} project files below. The sketches are diagrams, not screenshots.")
+        lines.insert(0, f"There are {published_count} project files on the next page. The sketches are diagrams, not screenshots.")
     return lines
 
 
@@ -155,10 +180,10 @@ def contact(request):
 
     if _rate_limited(request):
         form.add_error(None, "That's a lot of messages in a short time. Please try again later or email me directly.")
-        return render(request, "portfolio/contact.html", {"contact_form": form}, status=429)
+        return render(request, "portfolio/contact.html", {"contact_form": form, "address": "contact"}, status=429)
 
     if not form.is_valid():
-        return render(request, "portfolio/contact.html", {"contact_form": form}, status=400)
+        return render(request, "portfolio/contact.html", {"contact_form": form, "address": "contact"}, status=400)
 
     message = form.save()
     _notify(message)

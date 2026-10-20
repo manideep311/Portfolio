@@ -1,0 +1,406 @@
+/* ==========================================================================
+   Notebook pages: each section is its own page. The window stays put and
+   only the sheet turns, using cross-document view transitions. Browsers
+   without support simply load the next page.
+   ========================================================================== */
+@view-transition {
+  navigation: auto;
+}
+
+@layer components {
+  /* The notebook fills the screen; the desk around it never scrolls. */
+  html,
+  body {
+    height: 100%;
+  }
+  body {
+    overflow: hidden;
+  }
+  .window {
+    --pager-h: 3.1rem;
+    display: flex;
+    flex-direction: column;
+    height: calc(100dvh - 2 * clamp(0px, 2.2vw, 2rem));
+  }
+  .window > .titlebar,
+  .window > .toolbar {
+    flex: none;
+  }
+
+  /* The sheet is the page being read. Content is laid out to fit; if a
+     small screen can't fit it, the sheet scrolls on its own. */
+  .sheet {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-beige-deep) transparent;
+    view-transition-name: sheet;
+  }
+  .sheet > main {
+    min-height: 100%;
+  }
+
+  /* Pager: the bottom strip of the notebook */
+  .pager {
+    position: relative;
+    flex: none;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    height: var(--pager-h);
+    padding-inline: clamp(1rem, 3vw, 2.25rem);
+    border-top: 1.5px dashed rgb(42 41 38 / 0.35);
+    border-radius: 0 0 5px 5px;
+    background:
+      repeating-linear-gradient(180deg, rgb(255 255 255 / 0.4) 0 1px, transparent 1px 3px),
+      var(--color-paper-warm);
+  }
+  .pager__num {
+    margin: 0;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+  }
+  .pager__turn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    width: fit-content;
+    padding: 0.35rem 0.2rem;
+    font-family: var(--font-hand);
+    font-size: 1.12rem;
+    color: var(--color-notebook);
+    text-decoration: none;
+  }
+  .pager__turn--next {
+    justify-self: end;
+  }
+  .pager__hint {
+    font-family: var(--font-type);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-pencil);
+  }
+  .pager__arrow {
+    display: inline-block;
+    font-family: var(--font-sans);
+    transition: transform 0.3s var(--ease-spring);
+  }
+  .pager__turn--prev:hover .pager__arrow,
+  .pager__turn--prev:focus-visible .pager__arrow {
+    transform: translateX(-4px);
+  }
+  .pager__turn--next:hover .pager__arrow,
+  .pager__turn--next:focus-visible .pager__arrow {
+    transform: translateX(4px);
+  }
+  .pager__turn:hover > span:not(.pager__arrow) {
+    text-decoration: underline wavy rgb(35 63 153 / 0.45) 1.5px;
+    text-underline-offset: 0.3em;
+  }
+
+  /* Dog-eared corner of the sheet: a mouse-sized shortcut to the next page */
+  .dog-ear {
+    position: absolute;
+    z-index: 5;
+    right: 0;
+    bottom: calc(100% + 1.5px);
+    width: 2.3rem;
+    height: 2.3rem;
+    background: linear-gradient(315deg, var(--desk, #d9d2c3) 0 47%, rgb(0 0 0 / 0.12) 48%, #efe7d6 52% 100%);
+    border-top-left-radius: 4px;
+    box-shadow: -3px -3px 6px -3px rgb(0 0 0 / 0.25);
+    transition:
+      width 0.35s var(--ease-paper),
+      height 0.35s var(--ease-paper);
+  }
+  .dog-ear:hover {
+    width: 3.6rem;
+    height: 3.6rem;
+  }
+
+  @media (max-width: 640px) {
+    .window {
+      --pager-h: 2.9rem;
+    }
+    .pager {
+      gap: 0.5rem;
+    }
+    .pager__hint {
+      display: none;
+    }
+    .pager__turn {
+      font-size: 1.02rem;
+    }
+    .dog-ear {
+      display: none;
+    }
+  }
+}
+
+/* ---------- The page turn ---------- */
+::view-transition-group(root) {
+  animation-duration: 0.35s;
+}
+::view-transition-group(sheet) {
+  animation: none;
+}
+::view-transition-image-pair(sheet) {
+  isolation: isolate;
+  perspective: 5200px;
+}
+::view-transition-old(sheet),
+::view-transition-new(sheet) {
+  animation: none;
+  mix-blend-mode: normal;
+  backface-visibility: hidden;
+  transform-origin: left center;
+}
+
+/* Forwards: the current page lifts from the spine and turns over to the left */
+html:active-view-transition-type(forward)::view-transition-old(sheet) {
+  z-index: 2;
+  animation: notebook-turn-away 0.85s cubic-bezier(0.55, 0.06, 0.35, 1) both;
+}
+html:active-view-transition-type(forward)::view-transition-new(sheet) {
+  animation: notebook-uncover 0.85s ease-out both;
+}
+
+/* Backwards: the earlier page turns back over onto the current one */
+html:active-view-transition-type(backward)::view-transition-new(sheet) {
+  z-index: 2;
+  animation: notebook-turn-back 0.85s cubic-bezier(0.25, 0.7, 0.3, 1) both;
+}
+html:active-view-transition-type(backward)::view-transition-old(sheet) {
+  animation: notebook-cover 0.85s ease-in both;
+}
+
+@keyframes notebook-turn-away {
+  0% {
+    transform: rotateY(0deg);
+    filter: brightness(1);
+  }
+  35% {
+    filter: brightness(0.96);
+  }
+  100% {
+    transform: rotateY(-98deg);
+    filter: brightness(0.7);
+  }
+}
+@keyframes notebook-turn-back {
+  0% {
+    transform: rotateY(-98deg);
+    filter: brightness(0.7);
+  }
+  100% {
+    transform: rotateY(0deg);
+    filter: brightness(1);
+  }
+}
+@keyframes notebook-uncover {
+  from {
+    filter: brightness(0.82);
+  }
+  to {
+    filter: brightness(1);
+  }
+}
+@keyframes notebook-cover {
+  from {
+    filter: brightness(1);
+  }
+  to {
+    filter: brightness(0.82);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}
+
+/* ---------- Leaves ---------- */
+@layer components {
+  [data-leaf-hidden] {
+    display: none !important;
+  }
+  .leaf-kicker {
+    display: none;
+  }
+  .is-leafed .leaf-kicker {
+    display: block;
+    margin-bottom: 1.4rem;
+  }
+  .pager__leaf {
+    color: var(--color-pencil);
+  }
+}
+
+/* A notebook-sized screen: tighter rhythm so every leaf fits without scrolling.
+   Unlayered on purpose, so it can adjust the utility classes in the templates. */
+@media (min-width: 64rem) and (min-height: 37.5rem) {
+  .sheet main > .section,
+  .sheet .section {
+    padding-block: clamp(1.4rem, 3.6vh, 2.75rem);
+    content-visibility: visible;
+  }
+  .sheet .section-head {
+    margin-bottom: clamp(1.2rem, 3.2vh, 2.4rem);
+  }
+  .sheet .section-title {
+    margin-top: 0.4rem;
+    font-size: clamp(2.2rem, 1rem + 3.4vh, 3.5rem);
+  }
+  .sheet .section-lede {
+    margin-top: 0.7rem;
+  }
+
+  /* Cover */
+  .sheet .hero {
+    padding-block: clamp(1.2rem, 3.2vh, 2.6rem);
+  }
+  .is-leafed .hero {
+    align-content: center;
+    min-height: 100%;
+  }
+
+  /* About, second leaf */
+  .is-leafed .about__subhead {
+    margin-top: 0;
+  }
+
+  /* Toolkit: three panels across per leaf */
+  .is-leafed .kit {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+  .is-leafed .kit > .kit-panel {
+    grid-column: auto;
+  }
+
+  /* Journey: experience beside education, then certificates beside achievements */
+  .is-leafed .journey__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .is-leafed .timeline-wrap {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto 1fr;
+    grid-auto-flow: column;
+    column-gap: clamp(2rem, 4vw, 4rem);
+  }
+  .is-leafed .journey__receipts {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: start;
+    gap: clamp(2rem, 4vw, 4rem);
+  }
+
+  /* Work: one row of four project files per leaf */
+  .sheet .index-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2rem;
+  }
+  .sheet .index-card__summary {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  /* Case study: each leaf starts at the top */
+  .is-leafed .case__body,
+  .is-leafed .case__gallery,
+  .is-leafed .case__pager {
+    margin-top: 0;
+  }
+  .is-leafed .case {
+    padding-block: clamp(1.4rem, 3.6vh, 2.75rem);
+  }
+
+  /* The colophon only belongs on stacked layouts */
+  .sheet .footer {
+    display: none;
+  }
+}
+
+/* Long reading laid out as a two-column spread on notebook-sized screens */
+@media (min-width: 64rem) and (min-height: 37.5rem) {
+  .is-leafed .about__page {
+    column-count: 2;
+    column-gap: 2.75rem;
+  }
+  .is-leafed .about__page > p {
+    break-inside: avoid;
+  }
+  .is-leafed .case__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .is-leafed .case__prose {
+    column-count: 2;
+    column-gap: 3rem;
+  }
+  .is-leafed .case__prose > * {
+    break-inside: avoid;
+  }
+  .is-leafed .case__aside {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+/* A scaled-down leaf may use more of the sheet's width */
+@media (min-width: 64rem) and (min-height: 37.5rem) {
+  .sheet .wrap {
+    width: min(100%, calc(78rem / var(--fit-zoom, 1)));
+  }
+}
+
+/* While measuring, place reveals where they end up */
+html.is-fitting .reveal {
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Playground: title beside its explanation, a shorter terminal log */
+@media (min-width: 64rem) and (min-height: 37.5rem) {
+  .sheet .playground .section-head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: clamp(2rem, 4vw, 3.5rem);
+    align-items: end;
+  }
+  .sheet .playground .section-head .kicker {
+    grid-column: 1;
+  }
+  .sheet .playground .section-head .section-title {
+    grid-column: 1;
+  }
+  .sheet .playground .section-head .section-lede {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    max-width: 40rem;
+    margin-top: 0;
+  }
+  .sheet .pg__log {
+    min-height: 8.5rem;
+    max-height: 13rem;
+  }
+}
+@media (min-width: 64rem) and (min-height: 37.5rem) and (max-height: 50rem) {
+  .sheet .pg__log {
+    min-height: 6.5rem;
+    max-height: 10rem;
+  }
+}
+@media (min-width: 64rem) and (min-height: 37.5rem) {
+  .is-leafed .timeline-wrap .journey__label {
+    margin-top: 0;
+  }
+}

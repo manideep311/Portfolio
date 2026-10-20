@@ -2,13 +2,14 @@ from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
 from .models import Project
+from .pages import PAGES
 
 
 class StaticSitemap(Sitemap):
     changefreq = "monthly"
 
     def items(self):
-        return ["portfolio:home", "portfolio:project_list"]
+        return [page.url_name for page in PAGES]
 
     def location(self, item):
         return reverse(item)

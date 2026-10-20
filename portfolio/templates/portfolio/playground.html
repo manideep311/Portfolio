@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block title %}Playground — {{ profile.name }}{% endblock %}
+{% block description %}A tiny search engine over this notebook, running in your browser.{% endblock %}
+
+{% block content %}
+  {% include "portfolio/partials/playground.html" %}
+{% endblock %}

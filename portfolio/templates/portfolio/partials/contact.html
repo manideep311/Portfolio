@@ -5,7 +5,7 @@
       <span class="tape" style="--tape-r:-6deg; top:-0.75rem; left:2rem"></span>
       {% if profile.availability %}<p class="stamp letter__stamp"><span class="stamp__inner"><span class="stamp__top">{{ profile.availability }}</span>{% if profile.location %}<span class="stamp__bottom">{{ profile.location }}</span>{% endif %}</span></p>{% endif %}
       <p class="kicker">06 · Contact</p>
-      <h2 class="letter__title" id="contact-title">Let's make something that answers back.</h2>
+      <h1 class="letter__title" id="contact-title">Let's make something that answers back.</h1>
       <p class="letter__body hand">Dear future teammate, if you have a model that needs to meet real users, or a team that wants someone who'll own the whole loop from data to deployment, I'd love to hear about it.</p>
 
       <div class="mt-7 flex flex-wrap items-center gap-x-3.5 gap-y-2.5">
@@ -26,7 +26,7 @@
 
     <div class="note-form paper-lined reveal" style="--delay:120ms; --reveal-r:1deg">
       {% include "portfolio/partials/clip.html" with cls="note-form__clip" style="left:auto; right:2rem" %}
-      <h3 class="note-form__title">Or leave a note here</h3>
+      <h2 class="note-form__title">Or leave a note here</h2>
       {% include "portfolio/partials/contact_form.html" %}
     </div>
   </div>

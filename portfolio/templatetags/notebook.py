@@ -158,3 +158,9 @@ def month_year(value):
 @register.filter
 def year(value):
     return value.strftime("%Y") if value else "now"
+
+
+@register.filter
+def leaf_of(index, per_leaf):
+    """Which leaf (1-based) a zero-based item index lands on, with ``per_leaf`` items per leaf."""
+    return int(index) // int(per_leaf) + 1

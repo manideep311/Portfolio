@@ -19,7 +19,7 @@ class HomePageTests(TempMediaMixin, TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Manideep")
         self.assertContains(response, 'href="mailto:me@example.com"')
-        self.assertContains(response, '<html lang="en-IN">')
+        self.assertContains(response, '<html lang="en-IN"')
 
     def test_home_shows_only_published_featured_projects(self):
         make_project(title="Live Featured")
@@ -27,9 +27,8 @@ class HomePageTests(TempMediaMixin, TestCase):
         make_project(title="Secret Draft", status=Project.Status.DRAFT)
         make_project(title="Future Launch", published_at=timezone.now() + timedelta(days=1))
         response = self.client.get("/")
-        self.assertContains(response, 'id="work-live-featured"')
-        # Unfeatured but published: not in the gallery (the playground may still know it)
-        self.assertNotContains(response, 'id="work-live-unfeatured"')
+        self.assertContains(response, "Live Featured")
+        self.assertNotContains(response, "Live Unfeatured")
         self.assertNotContains(response, "Secret Draft")
         self.assertNotContains(response, "Future Launch")
 
@@ -45,9 +44,9 @@ class HomePageTests(TempMediaMixin, TestCase):
         from portfolio.models import SiteProfile
 
         SiteProfile.objects.update(phone="+91-0000000000", show_phone=False)
-        self.assertNotContains(self.client.get("/"), "+91-0000000000")
+        self.assertNotContains(self.client.get("/contact/"), "+91-0000000000")
         SiteProfile.objects.update(show_phone=True)
-        self.assertContains(self.client.get("/"), "+91-0000000000")
+        self.assertContains(self.client.get("/contact/"), "+91-0000000000")
 
     def test_security_headers_on_public_pages(self):
         response = self.client.get("/")
@@ -164,7 +163,7 @@ class DiscoveryTests(TestCase):
     def test_playground_knowledge_comes_from_published_content(self):
         make_project(title="Visible Thing", summary="Uses embeddings.")
         make_project(title="Invisible Thing", status=Project.Status.DRAFT)
-        response = self.client.get("/")
+        response = self.client.get("/playground/")
         self.assertContains(response, 'id="notebook-notes"')
         self.assertContains(response, "Visible Thing (")
         self.assertNotContains(response, "Invisible Thing")
