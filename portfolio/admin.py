@@ -13,7 +13,6 @@ from .models import (
     Education,
     Experience,
     ExperienceLink,
-    FieldNote,
     Principle,
     Project,
     ProjectImage,
@@ -269,12 +268,6 @@ class AchievementAdmin(admin.ModelAdmin):
     list_display = ("title", "detail", "order")
     list_editable = ("order",)
     search_fields = ("title", "detail")
-
-
-@admin.register(FieldNote)
-class FieldNoteAdmin(admin.ModelAdmin):
-    list_display = ("value", "label", "order")
-    list_editable = ("order",)
 
 
 @admin.register(Principle)

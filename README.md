@@ -23,7 +23,7 @@ experience, education, certifications, links, the résumé PDF — is edited in 
 admin. No code changes needed.
 
 ```
-Public site   /            hero · project gallery · about · toolkit · journey · playground · contact
+Public site   /            hero · project gallery · about · toolkit · journey · contact
               /work/       every published project
               /work/<slug>/ case study + screenshot gallery (published only)
 CMS           /admin/      login required, no public sign-up
@@ -37,7 +37,7 @@ CMS           /admin/      login required, no public sign-up
 | --- | --- | --- |
 | Backend | Django 5.2 LTS | Admin, auth, permissions, CSRF and forms for free; supported to April 2028 |
 | Frontend | Django templates + Tailwind CSS v4 + a hand-written CSS layer | Tailwind for layout and spacing, custom CSS for the paper, tape, polaroids and doodles |
-| Interactions | CSS animations + ~10 KB of vanilla JS (ES modules) | The playground engine loads lazily, only when it scrolls near |
+| Interactions | CSS animations + a few KB of vanilla JS (ES modules) | Reveals, parallax, the polaroid flip and the screenshot lightbox; no framework |
 | Content | Database (SQLite locally, PostgreSQL in production via `DATABASE_URL`) | Managed in Django Admin |
 | Media | Local `media/` in development, S3-compatible object storage in production | Uploads survive deploys |
 | Static files | WhiteNoise, hashed and Brotli/gzip pre-compressed | Cached forever, no extra server needed |
@@ -104,7 +104,7 @@ Sign in at `/admin/` (or your `DJANGO_ADMIN_URL`).
 - *Status*, *Featured* and *Display order* are editable straight from the project list. Bulk actions: publish, back to draft, feature, remove from homepage.
 - Drafts and scheduled projects return **404** to visitors. Signed-in staff with "view project" permission see a yellow *Draft preview* banner.
 - **Profile** is a single record: name, headline, intro, about story, availability stamp (leave empty to hide it), portrait, résumé PDF, email, and whether to show your phone number.
-- Hero stats live in *Field notes*. Skills (grouped, each group with its own visual style), work experience (with links), education, certifications, achievements, principles and social links each have their own sections.
+- Skills (grouped, each group with its own visual style), work experience (with links), education, certifications, achievements, working principles (shown in About next to the work-loop sketch) and social links each have their own sections.
 
 **Uploads**
 - Images: JPEG, PNG or WebP only, verified by reading the file, not trusting its name. SVG, GIF and disguised files are rejected. Max `MAX_IMAGE_UPLOAD_MB` (default 8 MB). Every upload is re-encoded to WebP, EXIF-rotated, capped at `IMAGE_MAX_EDGE` (default 2000 px) and given a random filename. Width and height are stored so pages never shift.
@@ -234,7 +234,6 @@ portfolio/
   signals.py            removes replaced or deleted files from storage
   permissions.py        "Portfolio editors" and "Inbox readers" groups
   middleware.py         nonce-based Content-Security-Policy
-  knowledge.py          builds the playground's notes from the CMS
   views.py, forms.py, sitemaps.py, urls.py
   templatetags/notebook.py   doodles, safe text formatting, project visuals, JSON-LD
   templates/portfolio/  pages, sections (partials/) and hand-drawn project sketches (art/)

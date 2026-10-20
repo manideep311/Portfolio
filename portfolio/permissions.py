@@ -19,7 +19,6 @@ CONTENT_MODELS = [
     "education",
     "certification",
     "achievement",
-    "fieldnote",
     "principle",
     "project",
     "projectimage",

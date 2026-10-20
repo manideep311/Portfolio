@@ -322,20 +322,6 @@ class Achievement(OrderedModel):
         return self.title
 
 
-class FieldNote(OrderedModel):
-    """A real number for the hero's field-notes card. Only documented facts."""
-
-    value = models.CharField(max_length=12, help_text="e.g. 4, 1st, 1000+")
-    label = models.CharField(max_length=120)
-
-    class Meta(OrderedModel.Meta):
-        verbose_name = "field note (hero stat)"
-        verbose_name_plural = "field notes (hero stats)"
-
-    def __str__(self):
-        return f"{self.value} {self.label}"
-
-
 class Principle(OrderedModel):
     title = models.CharField(max_length=80)
     body = models.TextField(max_length=400)

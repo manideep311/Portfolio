@@ -635,4 +635,53 @@
       display: none;
     }
   }
+
+  /* --- About: the work loop note --- */
+  .loop-note {
+    position: relative;
+    padding: 1.5rem 1.2rem 1rem;
+    background: var(--grain) 0 0 / 220px 220px, #f6efdf;
+    box-shadow: var(--shadow-paper);
+    rotate: -2deg;
+  }
+  .loop-note__clip {
+    top: -1.5rem;
+    right: 2rem;
+    --clip-r: 10deg;
+  }
+  .loop-note__title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .loop {
+    width: 100%;
+    margin-top: 0.4rem;
+    overflow: visible;
+  }
+  .loop__ring,
+  .loop__head {
+    fill: none;
+    stroke: var(--blue);
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .loop__ring {
+    --draw-delay: 700ms;
+  }
+  .loop__labels text {
+    font-family: var(--font-hand);
+    font-size: 17px;
+    fill: var(--ink);
+  }
+  .loop__center {
+    font-family: var(--font-type);
+    font-size: 13px;
+    fill: var(--muted);
+  }
+  .about__loop {
+    max-width: 24rem;
+    margin: 1.5rem auto 0;
+  }
 }
