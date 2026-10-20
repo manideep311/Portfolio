@@ -127,7 +127,7 @@
     --stamp-r: 6deg;
     animation: thunk 520ms var(--ease-out) 420ms backwards;
   }
-  @media (min-width: 48rem) {
+  @media (min-width: 68rem) {
     .hero__stamp {
       position: absolute;
       z-index: 4;
@@ -237,232 +237,11 @@
     fill: var(--muted);
   }
 
-  /* --- Featured project polaroids --- */
-  .hero__feature {
-    position: relative;
+  /* --- Scroll cue --- */
+  .hero__cue {
     display: grid;
-    gap: 1.75rem;
     justify-items: center;
-  }
-  .hero__start {
-    position: absolute;
-    z-index: 6;
-    top: -2.4rem;
-    left: 0;
-    font-size: 1.35rem;
-    color: var(--blue);
-    rotate: -8deg;
-  }
-  .hero__start-arrow {
-    position: absolute;
-    left: 92%;
-    top: 0.6rem;
-    width: 3.6rem;
-    rotate: 62deg;
-    --draw-delay: 900ms;
-  }
-  .hero-shot {
-    width: min(100%, 22rem);
-    transition:
-      transform var(--dur-2) var(--ease-out),
-      box-shadow var(--dur-2) var(--ease-out);
-  }
-  .hero-shot--1 {
-    z-index: 2;
-    rotate: 3deg;
-    animation: slide-in 720ms var(--ease-out) 300ms backwards;
-  }
-  .hero-shot--2 {
-    rotate: -4deg;
-    width: min(88%, 19rem);
-    margin-top: -1rem;
-    animation: slide-in 720ms var(--ease-out) 440ms backwards;
-  }
-  .hero-shot__clip {
-    top: -1.4rem;
-    right: 1.8rem;
-    --clip-r: 6deg;
-  }
-  .hero-shot:hover,
-  .hero-shot:focus-visible {
-    transform: translateY(-6px) rotate(-1.5deg);
-    box-shadow: 0 30px 40px -24px rgb(60 45 20 / 0.55);
-  }
-
-  /* --- Field notes index card --- */
-  .notes-card {
-    position: relative;
-    padding: 1.4rem 1.4rem 1.2rem 3.2rem;
-    rotate: 1deg;
     animation: fade-up 640ms var(--ease-out) 520ms backwards;
-  }
-  .notes-card__title {
-    position: relative;
-    display: inline-block;
-    font-size: var(--step-2);
-    font-weight: 750;
-  }
-  .notes-card__underline {
-    position: absolute;
-    left: 0;
-    bottom: -0.55em;
-    width: 105%;
-    height: 0.55em;
-    color: var(--blue);
-    --draw-delay: 800ms;
-  }
-  .notes-card__list {
-    display: grid;
-    margin-top: 1.3rem;
-  }
-  .notes-card__list li {
-    display: grid;
-    grid-template-columns: 5.6rem 1fr 1.6rem;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem 0;
-    border-top: 1.5px solid rgb(23 23 23 / 0.75);
-  }
-  .notes-card__value {
-    font-family: var(--font-display);
-    font-size: 1.7rem;
-    font-weight: 800;
-    line-height: 1;
-    text-decoration: underline 3px var(--blue);
-    text-underline-offset: 0.2em;
-  }
-  .notes-card__label {
-    font-family: var(--font-hand);
-    font-size: 1.08rem;
-    line-height: 1.25;
-  }
-  .notes-card__check {
-    width: 1.5rem;
-    color: var(--blue);
-  }
-  .notes-card__list li:nth-child(1) .notes-card__check {
-    --draw-delay: 900ms;
-  }
-  .notes-card__list li:nth-child(2) .notes-card__check {
-    --draw-delay: 1050ms;
-  }
-  .notes-card__list li:nth-child(3) .notes-card__check {
-    --draw-delay: 1200ms;
-  }
-  .notes-card__list li:nth-child(4) .notes-card__check {
-    --draw-delay: 1350ms;
-  }
-
-  /* --- How-I-work loop note --- */
-  .loop-note {
-    position: relative;
-    padding: 1.5rem 1.2rem 1rem;
-    background: var(--grain) 0 0 / 220px 220px, #f6efdf;
-    box-shadow: var(--shadow-paper);
-    rotate: -2deg;
-    animation: fade-up 640ms var(--ease-out) 620ms backwards;
-  }
-  .loop-note__clip {
-    top: -1.5rem;
-    right: 2rem;
-    --clip-r: 10deg;
-  }
-  .loop-note__title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--ink);
-  }
-  .loop {
-    width: 100%;
-    margin-top: 0.4rem;
-    overflow: visible;
-  }
-  .loop__ring,
-  .loop__head {
-    fill: none;
-    stroke: var(--blue);
-    stroke-width: 2.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .loop__ring {
-    --draw-delay: 700ms;
-  }
-  .loop__labels text {
-    font-family: var(--font-hand);
-    font-size: 17px;
-    fill: var(--ink);
-  }
-  .loop__center {
-    font-family: var(--font-type);
-    font-size: 13px;
-    fill: var(--muted);
-  }
-
-  /* --- Margin doodle robot --- */
-  .hero__bot {
-    position: relative;
-    display: grid;
-    justify-items: center;
-    align-content: start;
-    gap: 1.2rem;
-    animation: fade-up 640ms var(--ease-out) 720ms backwards;
-  }
-  .bot {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-  }
-  .bot__btn {
-    flex: none;
-    width: 6.5rem;
-    padding: 0.3rem;
-    border: 0;
-    background: none;
-    border-radius: 12px;
-    transition: transform var(--dur-2) var(--ease-spring);
-  }
-  .bot__btn:hover {
-    transform: rotate(-4deg) scale(1.04);
-  }
-  .bot__btn:active {
-    transform: rotate(3deg) scale(0.96);
-  }
-  .bot__svg {
-    overflow: visible;
-  }
-  .bot__ink {
-    fill: none;
-    stroke: var(--ink);
-    stroke-width: 2.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .bot__head,
-  .bot__body {
-    fill: var(--paper-white);
-  }
-  .bot__eye {
-    fill: #fff;
-  }
-  .bot__antenna {
-    fill: var(--blue);
-    stroke: var(--blue);
-  }
-  .bot__pupil {
-    fill: var(--ink);
-    transition: transform 120ms linear;
-  }
-  .bot__bubble {
-    position: relative;
-    max-width: 14rem;
-    padding: 0.7rem 0.9rem;
-    border: 1.8px solid var(--ink);
-    border-radius: 18px 18px 18px 4px;
-    background: var(--paper-white);
-    font-size: 1.05rem;
-    box-shadow: 3px 3px 0 rgb(23 23 23 / 0.12);
-    rotate: -2deg;
   }
   .hero__next {
     display: inline-flex;
@@ -492,7 +271,7 @@
     .hero {
       grid-template-columns: repeat(6, minmax(0, 1fr));
       column-gap: 1.5rem;
-      row-gap: 3rem;
+      row-gap: 2.5rem;
     }
     .hero__id {
       grid-column: 1 / span 4;
@@ -503,33 +282,22 @@
       margin-top: 2.5rem;
       width: 100%;
     }
-    .hero__feature {
-      grid-column: 1 / span 3;
-      margin-top: 1.5rem;
-    }
-    .hero__notes {
-      grid-column: 4 / span 3;
-      align-self: start;
-    }
-    .hero__loop {
-      grid-column: 1 / span 3;
-    }
-    .hero__bot {
-      grid-column: 4 / span 3;
+    .hero__cue {
+      grid-column: 1 / -1;
     }
   }
 
   /* --- Layout: desktop collage --- */
   @media (min-width: 68rem) {
     .hero {
+      max-width: 80rem;
       grid-template-columns: repeat(12, minmax(0, 1fr));
-      grid-template-rows: auto auto;
       column-gap: 1.25rem;
-      row-gap: 2.5rem;
+      row-gap: 2rem;
       padding-top: 3.4rem;
     }
     .hero__id {
-      grid-column: 1 / span 7;
+      grid-column: 1 / span 8;
       grid-row: 1;
       align-self: start;
     }
@@ -538,37 +306,19 @@
     .id-card__intro,
     .id-card__edu,
     .id-card__actions {
-      max-width: min(36rem, 84cqi);
+      max-width: min(36rem, 80cqi);
     }
     .hero__portrait {
-      grid-column: 7 / span 2;
+      grid-column: 8 / span 4;
       grid-row: 1;
+      justify-self: start;
       margin-top: 4.5rem;
-      margin-left: -1rem;
-      width: calc(100% + 2.5rem);
+      margin-left: 1rem;
+      width: min(100%, 18rem);
     }
-    .hero__feature {
-      grid-column: 9 / span 4;
-      grid-row: 1;
-      margin-top: 1rem;
-    }
-    .hero__notes {
-      grid-column: 1 / span 4;
+    .hero__cue {
+      grid-column: 1 / -1;
       grid-row: 2;
-    }
-    .hero__loop {
-      grid-column: 5 / span 4;
-      grid-row: 2;
-      align-self: start;
-      margin-top: 1.5rem;
-    }
-    .hero__bot {
-      grid-column: 9 / span 4;
-      grid-row: 2;
-      margin-top: 1rem;
-    }
-    .hero-shot--2 {
-      justify-self: end;
     }
   }
 
@@ -579,13 +329,6 @@
     }
     .hero__stamp .stamp__top {
       font-size: 0.78rem;
-    }
-    .hero__start {
-      top: -2rem;
-      left: 0.5rem;
-    }
-    .hero__bot .bot__bubble {
-      max-width: 12rem;
     }
   }
 }

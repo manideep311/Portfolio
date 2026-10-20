@@ -15,7 +15,7 @@ Built with **Django 5.2**, **Tailwind CSS v4** and a little vanilla JavaScript.
 - Django Admin CMS with a draft/published workflow and inline screenshot uploads per project.
 - Upload validation by content sniffing (not just file extensions), with images re-encoded to WebP.
 - Nonce-based Content Security Policy on every public page.
-- 82 automated tests, run by GitHub Actions on every push and pull request.
+- 83 automated tests, run by GitHub Actions on every push and pull request.
 - Lighthouse 100 on desktop and 97 on mobile at the last audit.
 - axe accessibility checks: 0 violations.
 
@@ -25,9 +25,9 @@ admin. No code changes needed.
 
 ```
 Public site   /              cover
-              /work/         every published project
+              /work/         every published project, featured ones first
               /work/<slug>/  case study + screenshot gallery (published only)
-              /about/  /toolkit/  /journey/  /playground/  /contact/
+              /about/  /toolkit/  /journey/  /contact/
 CMS           /admin/        login required, no public sign-up
 ```
 
@@ -46,7 +46,7 @@ the leaves stack and the page scrolls normally.
 | --- | --- | --- |
 | Backend | Django 5.2 LTS | Admin, auth, permissions, CSRF and forms for free; supported to April 2028 |
 | Frontend | Django templates + Tailwind CSS v4 + a hand-written CSS layer | Tailwind for layout and spacing, custom CSS for the paper, tape, polaroids and doodles |
-| Interactions | CSS animations + ~10 KB of vanilla JS (ES modules) | The playground engine loads lazily, only when it scrolls near |
+| Interactions | CSS animations + a few KB of vanilla JS (ES modules) | Reveals, parallax, the polaroid flip and the screenshot lightbox; no framework |
 | Content | Database (SQLite locally, PostgreSQL in production via `DATABASE_URL`) | Managed in Django Admin |
 | Media | Local `media/` in development, S3-compatible object storage in production | Uploads survive deploys |
 | Static files | WhiteNoise, hashed and Brotli/gzip pre-compressed | Cached forever, no extra server needed |
@@ -89,7 +89,7 @@ npm run build:css        # or: npm run watch:css while you work
 DJANGO_DEBUG=1 python manage.py test portfolio
 ```
 
-The 82 tests cover models, upload validation (type, size and content
+The 83 tests cover models, upload validation (type, size and content
 sniffing), image optimisation, file cleanup, publish and visibility rules,
 draft previews, permissions and roles, CSRF, the honeypot, rate limiting,
 email notifications, the portrait film look, the sitemap and the seed command. They also run the full
@@ -113,7 +113,7 @@ Sign in at `/admin/` (or your `DJANGO_ADMIN_URL`).
 - *Status*, *Featured* and *Display order* are editable straight from the project list. Bulk actions: publish, back to draft, feature, remove from homepage.
 - Drafts and scheduled projects return **404** to visitors. Signed-in staff with "view project" permission see a yellow *Draft preview* banner.
 - **Profile** is a single record: name, headline, intro, about story, availability stamp (leave empty to hide it), portrait, résumé PDF, email, and whether to show your phone number.
-- Hero stats live in *Field notes*. Skills (grouped, each group with its own visual style), work experience (with links), education, certifications, achievements, principles and social links each have their own sections.
+- Skills (grouped, each group with its own visual style), work experience (with links), education, certifications, achievements, working principles (shown in About next to the work-loop sketch) and social links each have their own sections.
 
 **Uploads**
 - Images: JPEG, PNG or WebP only, verified by reading the file, not trusting its name. SVG, GIF and disguised files are rejected. Max `MAX_IMAGE_UPLOAD_MB` (default 8 MB). Every upload is re-encoded to WebP, EXIF-rotated, capped at `IMAGE_MAX_EDGE` (default 2000 px) and given a random filename. Width and height are stored so pages never shift.
@@ -243,12 +243,11 @@ portfolio/
   signals.py            removes replaced or deleted files from storage
   permissions.py        "Portfolio editors" and "Inbox readers" groups
   middleware.py         nonce-based Content-Security-Policy
-  knowledge.py          builds the playground's notes from the CMS
   views.py, forms.py, sitemaps.py, urls.py
   templatetags/notebook.py   doodles, safe text formatting, project visuals, JSON-LD
   templates/portfolio/  pages, sections (partials/) and hand-drawn project sketches (art/)
   management/commands/seed_portfolio.py
-  tests/                82 tests
+  tests/                83 tests
 templates/              base layout, 404/500, admin branding
 assets/css/             Tailwind entry + scrapbook component CSS (source)
 static/                 compiled CSS, JS, fonts (self-hosted), textures, icons

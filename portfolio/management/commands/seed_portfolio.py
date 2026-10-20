@@ -21,7 +21,6 @@ from portfolio.models import (
     Education,
     Experience,
     ExperienceLink,
-    FieldNote,
     Principle,
     Project,
     SiteProfile,
@@ -78,13 +77,6 @@ PROFILE = {
 SOCIAL_LINKS = [
     ("LinkedIn", "https://www.linkedin.com/in/manideep311/", SocialLink.Kind.LINKEDIN),
     ("GitHub", "https://github.com/manideep311", SocialLink.Kind.GITHUB),
-]
-
-FIELD_NOTES = [
-    ("4", "ML & AI projects built end to end"),
-    ("6", "certifications — IBM, Qualcomm, Microsoft & more"),
-    ("1st", "prize, IP2K24 Project Expo"),
-    ("1000+", "applicants at the 24-hr hackathon I organised"),
 ]
 
 PRINCIPLES = [
@@ -411,7 +403,6 @@ CONTENT_MODELS = [
     Education,
     Certification,
     Achievement,
-    FieldNote,
     Principle,
     Skill,
     SkillCategory,
@@ -454,9 +445,6 @@ class Command(BaseCommand):
 
         for order, (label, url, kind) in enumerate(SOCIAL_LINKS):
             SocialLink.objects.create(label=label, url=url, kind=kind, order=order)
-
-        for order, (value, label) in enumerate(FIELD_NOTES):
-            FieldNote.objects.create(value=value, label=label, order=order)
 
         for order, (title, body) in enumerate(PRINCIPLES):
             Principle.objects.create(title=title, body=body, order=order)

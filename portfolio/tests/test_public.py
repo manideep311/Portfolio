@@ -21,16 +21,15 @@ class HomePageTests(TempMediaMixin, TestCase):
         self.assertContains(response, 'href="mailto:me@example.com"')
         self.assertContains(response, '<html lang="en-IN"')
 
-    def test_home_shows_only_published_featured_projects(self):
-        make_project(title="Live Featured")
-        make_project(title="Live Unfeatured", featured=False)
+    def test_work_page_lists_published_projects_featured_first(self):
+        make_project(title="Plain Published", featured=False, order=0)
+        make_project(title="Live Featured", order=5)
         make_project(title="Secret Draft", status=Project.Status.DRAFT)
         make_project(title="Future Launch", published_at=timezone.now() + timedelta(days=1))
-        response = self.client.get("/")
-        self.assertContains(response, "Live Featured")
-        self.assertNotContains(response, "Live Unfeatured")
-        self.assertNotContains(response, "Secret Draft")
-        self.assertNotContains(response, "Future Launch")
+        body = self.client.get("/work/").content.decode()
+        self.assertLess(body.index("Live Featured"), body.index("Plain Published"))
+        self.assertNotIn("Secret Draft", body)
+        self.assertNotIn("Future Launch", body)
 
     def test_home_without_profile_does_not_crash(self):
         from portfolio.models import SiteProfile
@@ -160,10 +159,15 @@ class DiscoveryTests(TestCase):
             with self.subTest(path=path):
                 self.assertEqual(self.client.get(path).status_code, 404)
 
-    def test_playground_knowledge_comes_from_published_content(self):
-        make_project(title="Visible Thing", summary="Uses embeddings.")
-        make_project(title="Invisible Thing", status=Project.Status.DRAFT)
-        response = self.client.get("/playground/")
-        self.assertContains(response, 'id="notebook-notes"')
-        self.assertContains(response, "Visible Thing (")
-        self.assertNotContains(response, "Invisible Thing")
+    def test_no_playground_bot_or_field_notes(self):
+        self.assertEqual(self.client.get("/playground/").status_code, 404)
+        response = self.client.get("/")
+        self.assertNotContains(response, "notebook-notes")
+        self.assertNotContains(response, "data-bot")
+        self.assertNotContains(response, "Field notes")
+        self.assertNotContains(response, "hero-shot")
+
+    def test_work_loop_sits_on_the_about_page(self):
+        body = self.client.get("/about/").content.decode()
+        self.assertIn('class="loop-note about__loop', body)
+        self.assertIn("how I like to work", body)

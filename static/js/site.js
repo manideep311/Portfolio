@@ -31,7 +31,6 @@ const OLD_SECTION_LINKS = {
   '#about': '/about/',
   '#toolkit': '/toolkit/',
   '#journey': '/journey/',
-  '#playground': '/playground/',
   '#contact': '/contact/',
 };
 
@@ -200,24 +199,20 @@ function initMenu() {
   });
 }
 
-/* ---------- Hero: pointer parallax + doodle eyes (desktop only) ---------- */
+/* ---------- Hero: pointer parallax (desktop only) ---------- */
 function initHeroPointer() {
   const hero = document.querySelector('[data-hero]');
   if (!hero) return;
   hero.querySelectorAll('[data-depth]').forEach((el) => el.style.setProperty('--depth', el.dataset.depth));
   if (reduceMotion || !finePointer) return;
 
-  const pupils = [...hero.querySelectorAll('[data-pupil]')];
-  const bot = hero.querySelector('.bot__svg');
   let rect = hero.getBoundingClientRect();
-  let botRect = bot?.getBoundingClientRect();
   let frame = 0;
   let px = 0;
   let py = 0;
 
   const measure = () => {
     rect = hero.getBoundingClientRect();
-    botRect = bot?.getBoundingClientRect();
   };
   window.addEventListener('resize', measure, { passive: true });
   window.addEventListener('scroll', measure, { passive: true });
@@ -228,16 +223,6 @@ function initHeroPointer() {
     const my = ((py - rect.top) / rect.height - 0.5) * 2;
     hero.style.setProperty('--mx', (-mx * 4).toFixed(2));
     hero.style.setProperty('--my', (-my * 3).toFixed(2));
-
-    if (botRect && pupils.length) {
-      const cx = botRect.left + botRect.width / 2;
-      const cy = botRect.top + botRect.height * 0.38;
-      const angle = Math.atan2(py - cy, px - cx);
-      const dist = Math.min(1, Math.hypot(px - cx, py - cy) / 260);
-      const dx = Math.cos(angle) * 4.5 * dist;
-      const dy = Math.sin(angle) * 4.5 * dist;
-      pupils.forEach((p) => p.setAttribute('transform', `translate(${dx.toFixed(2)} ${dy.toFixed(2)})`));
-    }
   };
 
   window.addEventListener(
@@ -249,21 +234,6 @@ function initHeroPointer() {
     },
     { passive: true },
   );
-}
-
-/* ---------- Doodle robot speech ---------- */
-function initBot() {
-  const button = document.querySelector('[data-bot-btn]');
-  const say = document.querySelector('[data-bot-say]');
-  const data = document.getElementById('bot-lines');
-  if (!button || !say || !data) return;
-  const lines = JSON.parse(data.textContent || '[]');
-  let i = 0;
-  button.addEventListener('click', () => {
-    if (!lines.length) return;
-    say.textContent = lines[i % lines.length];
-    i += 1;
-  });
 }
 
 /* ---------- Polaroid flip ---------- */
@@ -367,39 +337,11 @@ function initLightbox() {
   dialog.addEventListener('close', () => opener?.focus());
 }
 
-/* ---------- Playground: load only when it is about to be seen ---------- */
-function initPlayground() {
-  const root = document.querySelector('[data-playground]');
-  if (!root) return;
-  let loaded = false;
-  const load = () => {
-    if (loaded) return;
-    loaded = true;
-    import(root.dataset.src).then((m) => m.mount(root));
-  };
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          io.disconnect();
-          load();
-        }
-      },
-      { rootMargin: '600px 0px' },
-    );
-    io.observe(root);
-  }
-  root.addEventListener('focusin', load, { once: true });
-  root.addEventListener('pointerenter', load, { once: true });
-}
-
 initPageTurns();
 initReveals();
 initMenu();
 initHeroPointer();
-initBot();
 initFlip();
 initTilt();
 initCopy();
 initLightbox();
-initPlayground();

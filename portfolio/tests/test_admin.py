@@ -179,7 +179,7 @@ class ProjectWorkflowTests(TempMediaMixin, TestCase):
         self.assertTrue(project.is_live)
         self.assertTrue(project.is_featured)
 
-        # 5. Now it is public: detail page, project index and homepage gallery
+        # 5. Now it is public: detail page and the Work page
         detail = visitor.get("/work/notebook-rag/")
         self.assertEqual(detail.status_code, 200)
         self.assertContains(detail, "Notebook RAG")
@@ -187,7 +187,7 @@ class ProjectWorkflowTests(TempMediaMixin, TestCase):
         self.assertContains(detail, 'alt="Search index view"')
         self.assertContains(detail, 'href="https://github.com/example/notebook-rag"')
         self.assertContains(visitor.get("/work/"), "Notebook RAG")
-        self.assertContains(visitor.get("/"), "/work/notebook-rag/")
+        self.assertContains(visitor.get("/work/"), "/work/notebook-rag/")
 
     def test_add_more_screenshots_to_existing_project(self):
         self.client.force_login(self.admin)

@@ -29,7 +29,7 @@ class NotebookPageTests(TempMediaMixin, TestCase):
         self.assertNotContains(cover, 'rel="prev"')
         self.assertContains(cover, 'href="/work/" rel="next"')
         last = self.client.get("/contact/")
-        self.assertContains(last, 'href="/playground/" rel="prev"')
+        self.assertContains(last, 'href="/journey/" rel="prev"')
         self.assertNotContains(last, 'rel="next"')
 
     def test_case_study_turns_back_to_work(self):
@@ -66,7 +66,7 @@ class LeafTests(TempMediaMixin, TestCase):
         self.assertEqual([leaf_of(i, 3) for i in range(7)], [1, 1, 1, 2, 2, 2, 3])
 
     def test_dense_pages_are_split_into_leaves(self):
-        response = self.client.get("/")
+        response = self.client.get("/about/")
         self.assertContains(response, 'data-leaf="1"')
         self.assertContains(response, 'data-leaf="2"')
         self.assertContains(response, "data-leaf-status")

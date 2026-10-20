@@ -26,7 +26,6 @@ PAGES = (
     NotebookPage("about", "About", "portfolio:about"),
     NotebookPage("toolkit", "Toolkit", "portfolio:toolkit"),
     NotebookPage("journey", "Journey", "portfolio:journey"),
-    NotebookPage("playground", "Playground", "portfolio:playground"),
     NotebookPage("contact", "Contact", "portfolio:contact"),
 )
 

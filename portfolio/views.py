@@ -12,13 +12,11 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_GET, require_http_methods
 
 from .forms import ContactForm
-from .knowledge import build_notes
 from .models import (
     Achievement,
     Certification,
     Education,
     Experience,
-    FieldNote,
     Principle,
     Project,
     SkillCategory,
@@ -33,17 +31,7 @@ def _education_context():
 
 
 def home(request):
-    projects = list(Project.objects.featured().prefetch_related("images")[:2])
-    published_count = Project.objects.published().count()
-    context = {
-        **_education_context(),
-        "hero_projects": projects,
-        "published_count": published_count,
-        "bot_lines": _bot_lines(published_count),
-        "field_notes": FieldNote.objects.all(),
-        "address": "hello",
-    }
-    return render(request, "portfolio/home.html", context)
+    return render(request, "portfolio/home.html", {**_education_context(), "address": "hello"})
 
 
 def about(request):
@@ -72,24 +60,9 @@ def journey(request):
     return render(request, "portfolio/journey.html", context)
 
 
-def playground(request):
-    return render(request, "portfolio/playground.html", {"notes": build_notes(), "address": "playground"})
-
-
-def _bot_lines(published_count: int) -> list[str]:
-    lines = [
-        "Retrieval first, generation second. I was told to memorise that.",
-        "Psst… the polaroid flips.",
-        "Everything on this page is hand-drawn SVG and CSS. Even me.",
-        "Try the playground, page six. I'm much smarter on paper.",
-    ]
-    if published_count:
-        lines.insert(0, f"There are {published_count} project files on the next page. The sketches are diagrams, not screenshots.")
-    return lines
-
-
 def project_list(request):
-    projects = Project.objects.published().prefetch_related("images")
+    # Featured projects lead the Work page; the rest follow in their usual order.
+    projects = Project.objects.published().order_by("-is_featured", "order", "-published_at", "pk").prefetch_related("images")
     return render(request, "portfolio/project_list.html", {"projects": projects, "address": "work"})
 
 

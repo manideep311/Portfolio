@@ -368,39 +368,15 @@ html.is-fitting .reveal {
   transition: none !important;
 }
 
-/* Playground: title beside its explanation, a shorter terminal log */
-@media (min-width: 64rem) and (min-height: 37.5rem) {
-  .sheet .playground .section-head {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    column-gap: clamp(2rem, 4vw, 3.5rem);
-    align-items: end;
-  }
-  .sheet .playground .section-head .kicker {
-    grid-column: 1;
-  }
-  .sheet .playground .section-head .section-title {
-    grid-column: 1;
-  }
-  .sheet .playground .section-head .section-lede {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    max-width: 40rem;
-    margin-top: 0;
-  }
-  .sheet .pg__log {
-    min-height: 8.5rem;
-    max-height: 13rem;
-  }
-}
-@media (min-width: 64rem) and (min-height: 37.5rem) and (max-height: 50rem) {
-  .sheet .pg__log {
-    min-height: 6.5rem;
-    max-height: 10rem;
-  }
-}
 @media (min-width: 64rem) and (min-height: 37.5rem) {
   .is-leafed .timeline-wrap .journey__label {
     margin-top: 0;
+  }
+}
+
+/* The pager already turns the page, so the cover's cue only shows on stacked layouts */
+@media (min-width: 64rem) and (min-height: 37.5rem) {
+  .sheet .hero__cue {
+    display: none;
   }
 }
