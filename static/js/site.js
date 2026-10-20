@@ -25,37 +25,150 @@ function initReveals() {
   targets.forEach((el) => io.observe(el));
 }
 
-/* ---------- Section tracking: tabs + address bar ---------- */
-function initSectionTracking() {
-  const sections = document.querySelectorAll('[data-section]');
-  const links = new Map([...document.querySelectorAll('[data-nav-link]')].map((a) => [a.dataset.navLink, a]));
-  const address = document.querySelector('[data-address]');
-  if (!sections.length || !('IntersectionObserver' in window)) return;
+/* ---------- Page turns: arrow keys, swipes, old #section links ---------- */
+const OLD_SECTION_LINKS = {
+  '#work': '/work/',
+  '#about': '/about/',
+  '#toolkit': '/toolkit/',
+  '#journey': '/journey/',
+  '#contact': '/contact/',
+};
 
-  const setActive = (id) => {
-    links.forEach((link, key) => {
-      if (key === id) link.setAttribute('aria-current', 'location');
-      else link.removeAttribute('aria-current');
-    });
-    if (address) address.textContent = id || 'hello';
+/* Leaves: a dense page is split into leaves that turn one at a time on screens
+   big enough to show a leaf without scrolling. Smaller screens stack them. */
+const FIT_QUERY = '(min-width: 64rem) and (min-height: 37.5rem)';
+const canTypeTransitions = typeof ViewTransition !== 'undefined' && 'types' in ViewTransition.prototype;
+
+function initLeaves() {
+  const root = document.documentElement;
+  const sheet = document.querySelector('[data-sheet]');
+  const parts = [...document.querySelectorAll('[data-leaf]')];
+  const count = parts.reduce((max, el) => Math.max(max, Number(el.dataset.leaf) || 1), 1);
+  const status = document.querySelector('[data-leaf-status]');
+  const fit = window.matchMedia(FIT_QUERY);
+  const fromHash = () => {
+    if (location.hash === '#last') return count;
+    const match = location.hash.match(/^#leaf-(\d+)$/);
+    return match ? Math.min(count, Math.max(1, Number(match[1]))) : 1;
+  };
+  let current = fromHash();
+
+  const leafed = () => fit.matches && count > 1;
+  const render = () => {
+    const on = leafed();
+    root.classList.toggle('is-leafed', on);
+    parts.forEach((el) => el.toggleAttribute('data-leaf-hidden', on && Number(el.dataset.leaf) !== current));
+    if (status) status.textContent = on ? ` · leaf ${current} of ${count}` : '';
+    if (sheet) sheet.scrollTop = 0;
+    window.notebookFit?.();
+  };
+  const remember = () => {
+    const url = location.pathname + location.search + (current > 1 ? `#leaf-${current}` : '');
+    history.replaceState(history.state, '', url);
   };
 
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) setActive(entry.target.dataset.section);
-      }
+  render();
+  if (location.hash === '#last' || /^#leaf-/.test(location.hash)) remember();
+  fit.addEventListener('change', render);
+  // Once the real fonts are in, shrink a leaf that no longer fits; refit on resize.
+  const shrinkIfNeeded = () => window.notebookFit?.(true);
+  document.fonts?.addEventListener('loadingdone', shrinkIfNeeded);
+  document.fonts?.ready.then(shrinkIfNeeded);
+  window.addEventListener(
+    'load',
+    () => {
+      shrinkIfNeeded();
+      // Cached fonts can swap in after load without a loading event; check once more.
+      setTimeout(shrinkIfNeeded, 400);
     },
-    { rootMargin: '-45% 0px -50% 0px' },
+    { once: true },
   );
-  sections.forEach((s) => io.observe(s));
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => window.notebookFit?.(), 120);
+  });
 
-  const hero = document.querySelector('[data-hero]');
-  if (hero) {
-    new IntersectionObserver(([entry]) => entry.isIntersecting && setActive(null), {
-      rootMargin: '-45% 0px -50% 0px',
-    }).observe(hero);
+  // Returns true when the turn stayed on this page (another leaf exists that way).
+  return function turnLeaf(direction) {
+    const target = current + (direction === 'next' ? 1 : -1);
+    if (!leafed() || target < 1 || target > count) return false;
+    const update = () => {
+      current = target;
+      render();
+      remember();
+      document.getElementById('main')?.focus({ preventScroll: true });
+    };
+    if (document.startViewTransition && canTypeTransitions && !reduceMotion) {
+      document.startViewTransition({ update, types: [direction === 'next' ? 'forward' : 'backward'] });
+    } else {
+      update();
+    }
+    return true;
+  };
+}
+
+function initPageTurns() {
+  // Links shared before the site had separate pages pointed at /#section.
+  if (location.pathname === '/' && OLD_SECTION_LINKS[location.hash]) {
+    location.replace(OLD_SECTION_LINKS[location.hash]);
+    return;
   }
+
+  const turnLeaf = initLeaves();
+  const prev = document.querySelector('[data-turn="prev"]');
+  const next = document.querySelector('[data-turn="next"]');
+
+  // Turn the next leaf if there is one, otherwise follow the link to the next page.
+  next?.addEventListener('click', (e) => {
+    if (turnLeaf('next')) e.preventDefault();
+  });
+  document.querySelector('[data-turn-ear]')?.addEventListener('click', (e) => {
+    if (turnLeaf('next')) e.preventDefault();
+  });
+  // Turning back from a page's first leaf lands on the previous page's last leaf.
+  prev?.addEventListener('click', (e) => {
+    if (turnLeaf('prev')) {
+      e.preventDefault();
+    } else if (document.documentElement.classList.contains('is-leafed') || window.matchMedia(FIT_QUERY).matches) {
+      e.preventDefault();
+      location.href = prev.href.split('#')[0] + '#last';
+    }
+  });
+
+  const go = (link) => link && link.click();
+  document.addEventListener('keydown', (e) => {
+    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.target.closest('input, textarea, select, [contenteditable], dialog[open]')) return;
+    if (e.key === 'ArrowRight') go(next);
+    else if (e.key === 'ArrowLeft') go(prev);
+  });
+
+  // Swipe sideways on touch screens to turn the page.
+  const sheet = document.querySelector('[data-sheet]');
+  if (!sheet) return;
+  let start = null;
+  sheet.addEventListener(
+    'touchstart',
+    (e) => {
+      const t = e.touches[0];
+      start = e.touches.length === 1 && !e.target.closest('input, textarea, [data-no-swipe]') ? { x: t.clientX, y: t.clientY } : null;
+    },
+    { passive: true },
+  );
+  sheet.addEventListener(
+    'touchend',
+    (e) => {
+      if (!start) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - start.x;
+      const dy = t.clientY - start.y;
+      start = null;
+      if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.6) return;
+      go(dx < 0 ? next : prev);
+    },
+    { passive: true },
+  );
 }
 
 /* ---------- Mobile menu (disclosure) ---------- */
@@ -224,8 +337,8 @@ function initLightbox() {
   dialog.addEventListener('close', () => opener?.focus());
 }
 
+initPageTurns();
 initReveals();
-initSectionTracking();
 initMenu();
 initHeroPointer();
 initFlip();

@@ -11,10 +11,11 @@ Built with **Django 5.2**, **Tailwind CSS v4** and a little vanilla JavaScript.
 
 ## Highlights
 
+- Notebook-style navigation: separate pages with a page-turn transition, sized to fit the screen.
 - Django Admin CMS with a draft/published workflow and inline screenshot uploads per project.
 - Upload validation by content sniffing (not just file extensions), with images re-encoded to WebP.
 - Nonce-based Content Security Policy on every public page.
-- 72 automated tests, run by GitHub Actions on every push and pull request.
+- 83 automated tests, run by GitHub Actions on every push and pull request.
 - Lighthouse 100 on desktop and 97 on mobile at the last audit.
 - axe accessibility checks: 0 violations.
 
@@ -23,11 +24,19 @@ experience, education, certifications, links, the résumé PDF — is edited in 
 admin. No code changes needed.
 
 ```
-Public site   /            hero · project gallery · about · toolkit · journey · contact
-              /work/       every published project
-              /work/<slug>/ case study + screenshot gallery (published only)
-CMS           /admin/      login required, no public sign-up
+Public site   /              cover
+              /work/         every published project, featured ones first
+              /work/<slug>/  case study + screenshot gallery (published only)
+              /about/  /toolkit/  /journey/  /contact/
+CMS           /admin/        login required, no public sign-up
 ```
+
+Each section is its own page, and the site turns between them like a notebook: the
+page lifts from the spiral binding and flips over (cross-document View Transitions;
+browsers without support just load the next page). Dense pages are split into
+**leaves** that turn one at a time, so on a laptop or desktop screen nothing scrolls.
+Arrow keys, swipes, the pager and the dog-eared corner all turn the page. On phones
+the leaves stack and the page scrolls normally.
 
 ---
 
@@ -80,7 +89,7 @@ npm run build:css        # or: npm run watch:css while you work
 DJANGO_DEBUG=1 python manage.py test portfolio
 ```
 
-The 72 tests cover models, upload validation (type, size and content
+The 83 tests cover models, upload validation (type, size and content
 sniffing), image optimisation, file cleanup, publish and visibility rules,
 draft previews, permissions and roles, CSRF, the honeypot, rate limiting,
 email notifications, the portrait film look, the sitemap and the seed command. They also run the full
@@ -238,7 +247,7 @@ portfolio/
   templatetags/notebook.py   doodles, safe text formatting, project visuals, JSON-LD
   templates/portfolio/  pages, sections (partials/) and hand-drawn project sketches (art/)
   management/commands/seed_portfolio.py
-  tests/                72 tests
+  tests/                83 tests
 templates/              base layout, 404/500, admin branding
 assets/css/             Tailwind entry + scrapbook component CSS (source)
 static/                 compiled CSS, JS, fonts (self-hosted), textures, icons

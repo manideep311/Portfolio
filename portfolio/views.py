@@ -25,28 +25,44 @@ from .models import (
 logger = logging.getLogger(__name__)
 
 
-def home(request):
-    projects = list(Project.objects.featured().prefetch_related("images"))
+def _education_context():
     education = list(Education.objects.all())
-    published_count = Project.objects.published().count()
+    return {"education": education, "current_education": next((e for e in education if e.in_progress), None)}
+
+
+def home(request):
+    return render(request, "portfolio/home.html", {**_education_context(), "address": "hello"})
+
+
+def about(request):
     context = {
-        "featured_projects": projects,
-        "published_count": published_count,
-        "skill_categories": SkillCategory.objects.prefetch_related("skills"),
+        **_education_context(),
+        "principles": Principle.objects.all(),
+        "achievements": Achievement.objects.all(),
+        "address": "about",
+    }
+    return render(request, "portfolio/about.html", context)
+
+
+def toolkit(request):
+    context = {"skill_categories": SkillCategory.objects.prefetch_related("skills"), "address": "toolkit"}
+    return render(request, "portfolio/toolkit.html", context)
+
+
+def journey(request):
+    context = {
+        **_education_context(),
         "experience": Experience.objects.filter(is_published=True).prefetch_related("links"),
-        "education": education,
-        "current_education": next((e for e in education if e.in_progress), None),
-        "address": "hello",
         "certifications": Certification.objects.all(),
         "achievements": Achievement.objects.all(),
-        "principles": Principle.objects.all(),
-        "contact_form": ContactForm(),
+        "address": "journey",
     }
-    return render(request, "portfolio/home.html", context)
+    return render(request, "portfolio/journey.html", context)
 
 
 def project_list(request):
-    projects = Project.objects.published().prefetch_related("images")
+    # Featured projects lead the Work page; the rest follow in their usual order.
+    projects = Project.objects.published().order_by("-is_featured", "order", "-published_at", "pk").prefetch_related("images")
     return render(request, "portfolio/project_list.html", {"projects": projects, "address": "work"})
 
 
@@ -137,10 +153,10 @@ def contact(request):
 
     if _rate_limited(request):
         form.add_error(None, "That's a lot of messages in a short time. Please try again later or email me directly.")
-        return render(request, "portfolio/contact.html", {"contact_form": form}, status=429)
+        return render(request, "portfolio/contact.html", {"contact_form": form, "address": "contact"}, status=429)
 
     if not form.is_valid():
-        return render(request, "portfolio/contact.html", {"contact_form": form}, status=400)
+        return render(request, "portfolio/contact.html", {"contact_form": form, "address": "contact"}, status=400)
 
     message = form.save()
     _notify(message)

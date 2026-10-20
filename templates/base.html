@@ -1,5 +1,5 @@
 {% load static notebook %}<!doctype html>
-<html lang="en-IN">
+<html lang="en-IN"{% if page_order %} data-page-order="{{ page_order }}"{% endif %}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,7 +29,27 @@
   <link rel="preload" href="{% static 'fonts/fraunces-latin-soft-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="{% static 'fonts/instrument-sans-latin-wght-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
-  <script nonce="{{ request.csp_nonce }}">document.documentElement.classList.add('js')</script>
+  {% if prev_page %}<link rel="prefetch" href="{{ prev_page.url }}">{% endif %}
+  {% if next_page %}<link rel="prefetch" href="{{ next_page.url }}">{% endif %}
+  <script nonce="{{ request.csp_nonce }}">
+    document.documentElement.classList.add('js');
+    // Page turns: remember where we came from, then turn forwards or backwards.
+    (function () {
+      var root = document.documentElement;
+      var key = 'notebook:from';
+      var here = parseFloat(root.dataset.pageOrder);
+      addEventListener('pageswap', function () {
+        try { sessionStorage.setItem(key, String(here)); } catch (e) {}
+      });
+      addEventListener('pagereveal', function (event) {
+        if (!event.viewTransition) return;
+        var from = NaN;
+        try { from = parseFloat(sessionStorage.getItem(key)); } catch (e) {}
+        if (isNaN(from) || isNaN(here) || from === here) { event.viewTransition.skipTransition(); return; }
+        event.viewTransition.types.add(here > from ? 'forward' : 'backward');
+      });
+    })();
+  </script>
   <script type="module" src="{% static 'js/site.js' %}"></script>
   {% block head_extra %}{% endblock %}
 </head>
@@ -38,12 +58,69 @@
 
   <div class="window" id="top">
     {% include "portfolio/partials/frame_chrome.html" %}
-    <div class="page">
+    <div class="page sheet" data-sheet>
       <main id="main" tabindex="-1">
         {% block content %}{% endblock %}
       </main>
-      {% include "portfolio/partials/footer.html" %}
+
     </div>
+    {% include "portfolio/partials/pager.html" %}
   </div>
+  <script nonce="{{ request.csp_nonce }}">
+    // Before the first paint: show only the active leaf, then scale the sheet
+    // to fit if it's a little too tall. site.js reuses notebookFit when turning.
+    (function () {
+      var FIT = '(min-width: 64rem) and (min-height: 37.5rem)';
+      var main = document.getElementById('main');
+      if (!main) return;
+      var sheet = main.parentElement;
+      var parts = main.querySelectorAll('[data-leaf]');
+      var count = 1, i, n;
+      for (i = 0; i < parts.length; i++) count = Math.max(count, Number(parts[i].getAttribute('data-leaf')) || 1);
+      if (count > 1 && window.matchMedia(FIT).matches) {
+        var m = location.hash.match(/^#leaf-(\d+)$/);
+        var current = location.hash === '#last' ? count : m ? Math.min(count, Math.max(1, Number(m[1]))) : 1;
+        document.documentElement.classList.add('is-leafed');
+        for (i = 0; i < parts.length; i++) {
+          n = Number(parts[i].getAttribute('data-leaf'));
+          if (n !== current) parts[i].setAttribute('data-leaf-hidden', '');
+        }
+      }
+      // The sheet must not scroll; reveal offsets are ignored because they settle to zero.
+      function fits() {
+        return sheet.scrollHeight <= sheet.clientHeight + 1;
+      }
+      function setZoom(z) {
+        main.style.zoom = z === 1 ? '' : String(z);
+        main.style.setProperty('--fit-zoom', String(z));
+      }
+      // notebookFit() fits from scratch; notebookFit(true) only shrinks an overflowing
+      // leaf (used once fonts arrive, so content never grows under the reader).
+      window.notebookFit = function (shrinkOnly) {
+        var root = document.documentElement;
+        var current = parseFloat(main.style.getPropertyValue('--fit-zoom')) || 1;
+        if (!window.matchMedia(FIT).matches) { setZoom(1); return; }
+        root.classList.add('is-fitting');
+        if (shrinkOnly && fits()) { root.classList.remove('is-fitting'); return; }
+        var hi = shrinkOnly ? current : 1;
+        setZoom(hi);
+        if (!fits()) {
+          // Largest scale between 75% and hi at which the leaf fits.
+          var lo = 0.75;
+          setZoom(lo);
+          if (fits()) {
+            for (var step = 0; step < 6; step++) {
+              var mid = (lo + hi) / 2;
+              setZoom(mid);
+              if (fits()) lo = mid; else hi = mid;
+            }
+            setZoom(Math.floor(lo * 1000) / 1000);
+          }
+        }
+        root.classList.remove('is-fitting');
+      };
+      window.notebookFit();
+    })();
+  </script>
 </body>
 </html>

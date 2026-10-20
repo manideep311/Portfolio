@@ -17,7 +17,7 @@
         <p class="id-card__intro">{{ profile.intro }}</p>
         {% if profile.education_line %}<p class="id-card__edu type">{{ profile.education_line }}</p>{% endif %}
         <div class="id-card__actions mt-6.5 flex flex-wrap items-center gap-x-4.5 gap-y-3.5">
-          <a class="btn" href="#work">Open the project files <span aria-hidden="true">↓</span></a>
+          <a class="btn" href="{% url 'portfolio:project_list' %}">Open the project files <span aria-hidden="true">→</span></a>
           {% if profile.resume %}<a class="btn btn--ghost" href="{{ profile.resume.url }}" target="_blank" rel="noopener">Résumé (PDF)<span class="sr-only"> — opens in a new tab</span></a>{% endif %}
           <a class="ink-link id-card__mail" href="mailto:{{ profile.email }}">say hello</a>
         </div>
@@ -64,8 +64,8 @@
     </div>
   </div>
 
-  <!-- Scroll cue -->
+  <!-- Page-turn cue -->
   <div class="hero__cue">
-    <a class="hero__next hand" href="#work">turn the page{% doodle "arrow-down" cls="hero__next-arrow" weight=2.6 %}</a>
+    <a class="hero__next hand" href="{% url 'portfolio:project_list' %}">turn the page{% doodle "arrow-down" cls="hero__next-arrow" weight=2.6 %}</a>
   </div>
 </section>

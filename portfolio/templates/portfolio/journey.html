@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block title %}Journey — {{ profile.name }}{% endblock %}
+{% block description %}Experience, education, certifications and achievements of {{ profile.name }}.{% endblock %}
+
+{% block content %}
+  {% include "portfolio/partials/journey.html" %}
+{% endblock %}

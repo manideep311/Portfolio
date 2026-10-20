@@ -2,16 +2,12 @@
 {% load notebook %}
 
 {% block head_extra %}{% person_jsonld profile social_links site_url request.csp_nonce %}{% endblock %}
+{% block body_class %}is-cover{% endblock %}
 
 {% block content %}
   {% if not profile %}
     <section class="section"><div class="wrap"><h1 class="section-title">Notebook coming soon</h1><p class="section-lede">Sign in to the admin and create the profile, or run <code>python manage.py seed_portfolio</code>.</p></div></section>
   {% else %}
     {% include "portfolio/partials/hero.html" %}
-    {% include "portfolio/partials/work.html" %}
-    {% include "portfolio/partials/about.html" %}
-    {% include "portfolio/partials/toolkit.html" %}
-    {% include "portfolio/partials/journey.html" %}
-    {% include "portfolio/partials/contact.html" %}
   {% endif %}
 {% endblock %}

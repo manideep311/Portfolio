@@ -19,19 +19,17 @@ class HomePageTests(TempMediaMixin, TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Manideep")
         self.assertContains(response, 'href="mailto:me@example.com"')
-        self.assertContains(response, '<html lang="en-IN">')
+        self.assertContains(response, '<html lang="en-IN"')
 
-    def test_home_shows_only_published_featured_projects(self):
-        make_project(title="Live Featured")
-        make_project(title="Live Unfeatured", featured=False)
+    def test_work_page_lists_published_projects_featured_first(self):
+        make_project(title="Plain Published", featured=False, order=0)
+        make_project(title="Live Featured", order=5)
         make_project(title="Secret Draft", status=Project.Status.DRAFT)
         make_project(title="Future Launch", published_at=timezone.now() + timedelta(days=1))
-        response = self.client.get("/")
-        self.assertContains(response, 'id="work-live-featured"')
-        # Unfeatured but published: not in the gallery
-        self.assertNotContains(response, 'id="work-live-unfeatured"')
-        self.assertNotContains(response, "Secret Draft")
-        self.assertNotContains(response, "Future Launch")
+        body = self.client.get("/work/").content.decode()
+        self.assertLess(body.index("Live Featured"), body.index("Plain Published"))
+        self.assertNotIn("Secret Draft", body)
+        self.assertNotIn("Future Launch", body)
 
     def test_home_without_profile_does_not_crash(self):
         from portfolio.models import SiteProfile
@@ -45,9 +43,9 @@ class HomePageTests(TempMediaMixin, TestCase):
         from portfolio.models import SiteProfile
 
         SiteProfile.objects.update(phone="+91-0000000000", show_phone=False)
-        self.assertNotContains(self.client.get("/"), "+91-0000000000")
+        self.assertNotContains(self.client.get("/contact/"), "+91-0000000000")
         SiteProfile.objects.update(show_phone=True)
-        self.assertContains(self.client.get("/"), "+91-0000000000")
+        self.assertContains(self.client.get("/contact/"), "+91-0000000000")
 
     def test_security_headers_on_public_pages(self):
         response = self.client.get("/")
@@ -161,18 +159,15 @@ class DiscoveryTests(TestCase):
             with self.subTest(path=path):
                 self.assertEqual(self.client.get(path).status_code, 404)
 
-    def test_home_has_no_playground_bot_or_field_notes(self):
+    def test_no_playground_bot_or_field_notes(self):
+        self.assertEqual(self.client.get("/playground/").status_code, 404)
         response = self.client.get("/")
-        self.assertNotContains(response, 'id="playground"')
         self.assertNotContains(response, "notebook-notes")
         self.assertNotContains(response, "data-bot")
         self.assertNotContains(response, "Field notes")
         self.assertNotContains(response, "hero-shot")
 
-    def test_work_loop_sits_in_the_about_section(self):
-        body = self.client.get("/").content.decode()
-        about = body.index('id="about"')
-        loop = body.index('class="loop-note about__loop')
-        self.assertLess(about, loop)
-        self.assertLess(loop, body.index('id="toolkit"'))
+    def test_work_loop_sits_on_the_about_page(self):
+        body = self.client.get("/about/").content.decode()
+        self.assertIn('class="loop-note about__loop', body)
         self.assertIn("how I like to work", body)

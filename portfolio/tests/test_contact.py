@@ -23,7 +23,8 @@ class ContactFormTests(TestCase):
         self.assertEqual(message.email, "ada@example.com")
         self.assertFalse(message.is_read)
         # Never shown on public pages
-        self.assertNotContains(self.client.get("/"), "ada@example.com")
+        for path in ["/", "/contact/"]:
+            self.assertNotContains(self.client.get(path), "ada@example.com")
 
     def test_invalid_message_shows_errors(self):
         response = self.client.post(self.url, {"name": "", "email": "nope", "message": "short"})
