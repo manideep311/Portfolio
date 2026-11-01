@@ -175,7 +175,7 @@ function initPageTurns() {
     'touchstart',
     (e) => {
       const t = e.touches[0];
-      start = e.touches.length === 1 && !e.target.closest('input, textarea, [data-no-swipe]') ? { x: t.clientX, y: t.clientY } : null;
+      start = e.touches.length === 1 && !e.target.closest('input, textarea') ? { x: t.clientX, y: t.clientY } : null;
     },
     { passive: true },
   );
@@ -274,38 +274,6 @@ function initFlip() {
   card.addEventListener('click', toggle);
 }
 
-/* ---------- Gentle card tilt (desktop) ---------- */
-function initTilt() {
-  if (reduceMotion || !finePointer) return;
-  document.querySelectorAll('[data-tilt]').forEach((el) => {
-    let rect = null;
-    let frame = 0;
-    let x = 0;
-    let y = 0;
-    const update = () => {
-      frame = 0;
-      if (!rect) return;
-      const rx = ((y - rect.top) / rect.height - 0.5) * -7;
-      const ry = ((x - rect.left) / rect.width - 0.5) * 9;
-      el.style.setProperty('--rx', `${rx.toFixed(2)}deg`);
-      el.style.setProperty('--ry', `${ry.toFixed(2)}deg`);
-    };
-    el.addEventListener('pointerenter', () => {
-      rect = el.getBoundingClientRect();
-    });
-    el.addEventListener('pointermove', (e) => {
-      x = e.clientX;
-      y = e.clientY;
-      if (!frame) frame = requestAnimationFrame(update);
-    });
-    el.addEventListener('pointerleave', () => {
-      rect = null;
-      el.style.setProperty('--rx', '0deg');
-      el.style.setProperty('--ry', '0deg');
-    });
-  });
-}
-
 /* ---------- Copy email ---------- */
 function initCopy() {
   document.querySelectorAll('[data-copy]').forEach((button) => {
@@ -365,6 +333,5 @@ initReveals();
 initMenu();
 initHeroPointer();
 initFlip();
-initTilt();
 initCopy();
 initLightbox();

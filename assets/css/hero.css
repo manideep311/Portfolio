@@ -195,11 +195,6 @@
     display: block;
     color: var(--blue);
   }
-  .portrait__ps {
-    display: block;
-    margin-top: 0.4rem;
-    color: var(--muted);
-  }
   .portrait__flip {
     position: absolute;
     right: 0.4rem;
