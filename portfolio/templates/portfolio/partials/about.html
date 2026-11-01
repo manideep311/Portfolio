@@ -15,13 +15,13 @@
         <p class="about__sign hand">— {{ profile.first_name }}</p>
       </div>
 
-      <aside class="about__margin" aria-label="Margin notes">
+      <div class="about__margin" role="group" aria-label="Margin notes">
         {% if profile.location %}<p class="margin-note reveal" style="--reveal-r:-3deg">{% doodle "star" cls="margin-note__icon" weight=2.2 %}based in {{ profile.location }}</p>{% endif %}
         {% for win in achievements|slice:":2" %}
           <p class="margin-note reveal" style="--delay:{{ forloop.counter }}00ms; --reveal-r:2deg">{% doodle "sparkle" cls="margin-note__icon" weight=2 %}{{ win.title }} — {{ win.detail }}</p>
         {% endfor %}
         {% if current_education %}<p class="margin-note reveal" style="--delay:300ms">{% doodle "check" cls="margin-note__icon" weight=3 %}{{ current_education.degree }} · {{ current_education.score|default:"in progress" }}</p>{% endif %}
-      </aside>
+      </div>
     </div>
 
     <div data-leaf="2">

@@ -47,7 +47,7 @@
       <div class="case__prose">{{ project.description|simple_format }}</div>
     </div>
 
-    <aside class="case__aside grid content-start gap-7" data-leaf="3">
+    <div class="case__aside grid content-start gap-7" data-leaf="3">
       {% if project.contribution_list %}
         <section class="case__card paper" aria-labelledby="built-title">
           <h2 class="case__h3" id="built-title">What I built</h2>
@@ -67,7 +67,7 @@
         </section>
       {% endif %}
       {% if project.note %}<p class="case__note hand">{{ project.note }}</p>{% endif %}
-    </aside>
+    </div>
   </div>
 
   {% if screenshots %}
