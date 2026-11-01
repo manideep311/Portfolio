@@ -107,11 +107,11 @@ Sign in at `/admin/` (or your `DJANGO_ADMIN_URL`).
 1. *Projects → Add project.* Fill in the title (the slug fills itself), the summary, the story, your contribution, outcomes and technologies (comma-separated, in display order).
 2. Under **Screenshots**, choose an image, add alt text (required) and an optional caption. "Add another Screenshot" adds more rows. Lower *display order* comes first.
 3. Optionally upload a **featured image** (with alt text). Without one, the card shows the hand-drawn sketch you pick in *Fallback sketch*.
-4. Under **Publishing**, set *Status = Published* and tick *Featured on homepage*. Leave *Published at* empty to publish now, or set a future date to schedule it.
+4. Under **Publishing**, set *Status = Published* and tick *Shown first on the Work page* if it should lead. Leave *Published at* empty to publish now, or set a future date to schedule it.
 5. Save. Use **View on site** or the *Public?* column to open it.
 
 **Day-to-day**
-- *Status*, *Featured* and *Display order* are editable straight from the project list. Bulk actions: publish, back to draft, feature, remove from homepage.
+- *Status*, *Featured* and *Display order* are editable straight from the project list. Bulk actions: publish, back to draft, show first on the Work page, stop showing first.
 - Drafts and scheduled projects return **404** to visitors. Signed-in staff with "view project" permission see a yellow *Draft preview* banner.
 - **Profile** is a single record: name, headline, intro, about story, availability stamp (leave empty to hide it), portrait, résumé PDF, email, and whether to show your phone number.
 - Skills (grouped, each group with its own visual style), work experience (with links), education, certifications, achievements, working principles (shown in About next to the work-loop sketch) and social links each have their own sections.
