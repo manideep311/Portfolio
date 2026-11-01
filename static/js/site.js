@@ -82,7 +82,7 @@ function initLeaves({ prev, next, ear }) {
     const on = leafed();
     root.classList.toggle('is-leafed', on);
     parts.forEach((el) => el.toggleAttribute('data-leaf-hidden', on && Number(el.dataset.leaf) !== current));
-    if (status) status.textContent = on ? ` · leaf ${current} of ${count}` : '';
+    if (status) status.textContent = on ? ` · leaf ${current} of ${count}${current < count ? ', more on the next' : ''}` : '';
     const nextLeaf = on && current < count ? current + 1 : 0;
     setNext(nextLeaf, count);
     ear?.setAttribute('href', nextLeaf ? `#leaf-${nextLeaf}` : earHref);
