@@ -29,8 +29,12 @@ class NotebookPageTests(TempMediaMixin, TestCase):
         response = self.client.get("/about/")
         self.assertContains(response, 'data-turn="prev" aria-label="Previous page: Work"')
         self.assertContains(response, 'data-turn="next" aria-label="Next page: Toolkit"')
-        self.assertContains(response, '<span data-turn-label><span class="pager__hint">next</span> Toolkit</span>', html=False)
-        self.assertContains(response, '<span data-turn-label><span class="pager__hint">back to</span> Work</span>', html=False)
+        self.assertContains(
+            response, '<span data-turn-label><span class="pager__hint">next</span> Toolkit</span>', html=False
+        )
+        self.assertContains(
+            response, '<span data-turn-label><span class="pager__hint">back to</span> Work</span>', html=False
+        )
 
     def test_cover_and_last_page_have_one_neighbour(self):
         cover = self.client.get("/")
