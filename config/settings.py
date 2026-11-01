@@ -215,13 +215,22 @@ CONTACT_NOTIFY_EMAIL = env("CONTACT_NOTIFY_EMAIL", "")
 # Contact form rate limit: N submissions per window per client.
 CONTACT_RATE_LIMIT = int(env("CONTACT_RATE_LIMIT", "5"))
 CONTACT_RATE_WINDOW_SECONDS = int(env("CONTACT_RATE_WINDOW_SECONDS", "3600"))
-# Only enable behind a proxy you trust (Render, Railway, Fly, Heroku all set it).
-TRUST_X_FORWARDED_FOR = env_bool("TRUST_X_FORWARDED_FOR", False)
+# Where the rate limit finds the visitor's IP. Empty: REMOTE_ADDR (no proxy).
+# "X-Real-IP": PythonAnywhere's proxy sets it. "X-Forwarded-For": the rightmost
+# entry, the one your proxy appended (the rest is whatever the client sent).
+# The older TRUST_X_FORWARDED_FOR=1 still means "X-Forwarded-For".
+CLIENT_IP_HEADER = env(
+    "CLIENT_IP_HEADER", "X-Forwarded-For" if env_bool("TRUST_X_FORWARDED_FOR", False) else ""
+).strip()
+if CLIENT_IP_HEADER not in ("", "X-Real-IP", "X-Forwarded-For"):
+    raise ImproperlyConfigured('CLIENT_IP_HEADER must be empty, "X-Real-IP" or "X-Forwarded-For".')
 
+# Rate-limit counters live in the database, so every web worker shares them.
+# Create the table once with `python manage.py createcachetable`.
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        "LOCATION": "portfolio",
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "django_cache",
     }
 }
 

@@ -50,6 +50,8 @@ DJANGO_CSRF_TRUSTED_ORIGINS=https://$DOMAIN
 SITE_URL=https://$DOMAIN
 # PythonAnywhere's "Force HTTPS" setting does the redirect
 DJANGO_SECURE_SSL_REDIRECT=0
+# PythonAnywhere's proxy passes the visitor's IP here (used by the contact rate limit)
+CLIENT_IP_HEADER=X-Real-IP
 EOF
   chmod 600 .env
   echo "==> Wrote .env for $DOMAIN"
@@ -59,6 +61,7 @@ fi
 
 echo "==> Setting up the database"
 python manage.py migrate --no-input
+python manage.py createcachetable
 python manage.py seed_portfolio
 echo "==> Collecting static files"
 python manage.py collectstatic --no-input --verbosity 0

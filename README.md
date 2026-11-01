@@ -65,6 +65,7 @@ pip install -r requirements.txt
 
 cp .env.example .env                 # DJANGO_DEBUG=1 is fine locally
 python manage.py migrate             # creates db.sqlite3 and the staff groups
+python manage.py createcachetable    # the table the contact-form rate limit uses
 python manage.py seed_portfolio      # loads the résumé content (only if the DB is empty)
 python manage.py createsuperuser     # your CMS login
 python manage.py runserver
@@ -150,7 +151,7 @@ All settings come from environment variables (`.env` locally). See
 | `AWS_*` | S3 / R2 media storage. Empty bucket = local `media/` |
 | `DJANGO_ADMIN_URL` | Move the admin away from `/admin/` |
 | `CONTACT_NOTIFY_EMAIL` + `EMAIL_*` | Optional email when a new message arrives |
-| `TRUST_X_FORWARDED_FOR` | `1` behind a platform proxy so rate limiting sees real IPs |
+| `CLIENT_IP_HEADER` | Where the contact rate limit finds the visitor's IP: empty = `REMOTE_ADDR`, `X-Real-IP` on PythonAnywhere (the setup script sets it), `X-Forwarded-For` behind other proxies (only its rightmost entry, which your proxy added, is used) |
 
 **Security in place:** Django auth and permissions on every admin view; no
 registration route; CSRF on all forms; a nonce-based Content-Security-Policy on
@@ -190,7 +191,10 @@ click **Run until 3 months from today** on the Web tab every three months.
 ```bash
 bash ~/Portfolio/deploy/pythonanywhere_update.sh
 ```
-It pulls, installs, migrates, collects static files and reloads the site.
+It pulls, installs, migrates, creates the rate-limit cache table if it's
+missing, collects static files and reloads the site. Because the script pulls
+a new copy of itself, run `git -C ~/Portfolio pull` first when an update
+changes the script.
 
 **Backups:** download `db.sqlite3` and the `media/` folder from the Files tab
 now and then. Settings live in `~/Portfolio/.env`; press Reload after editing.

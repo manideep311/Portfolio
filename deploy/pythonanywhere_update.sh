@@ -17,8 +17,15 @@ git pull --ff-only
 source "$VENV/bin/activate"
 pip install --quiet --no-cache-dir -r requirements-pythonanywhere.txt
 
+# Older installs predate CLIENT_IP_HEADER; PythonAnywhere passes the visitor's IP in X-Real-IP.
+if [ -f .env ] && ! grep -q '^CLIENT_IP_HEADER=' .env; then
+  echo 'CLIENT_IP_HEADER=X-Real-IP' >> .env
+  echo "==> Added CLIENT_IP_HEADER=X-Real-IP to .env"
+fi
+
 echo "==> Applying database changes and static files"
 python manage.py migrate --no-input
+python manage.py createcachetable
 python manage.py collectstatic --no-input --verbosity 0
 
 if [ -f "$WSGI_FILE" ]; then
