@@ -66,6 +66,8 @@
     </div>
     {% include "portfolio/partials/pager.html" %}
   </div>
+  {# Outside the zoomed sheet, so dialogs such as the screenshot viewer show at full size. #}
+  {% block after_main %}{% endblock %}
   <script nonce="{{ request.csp_nonce }}">
     // Before the first paint: show only the active leaf, then scale the sheet
     // to fit if it's a little too tall. site.js reuses notebookFit when turning.

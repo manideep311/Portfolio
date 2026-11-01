@@ -48,6 +48,10 @@ class NotebookPageTests(TempMediaMixin, TestCase):
         self.assertContains(response, 'data-page-order="1.5"')
         self.assertContains(response, '<a href="/work/" aria-current="page">')
 
+    def test_screenshot_viewer_sits_outside_the_zoomed_sheet(self):
+        html = self.client.get(make_project(title="Deep Dive").get_absolute_url()).content.decode()
+        self.assertGreater(html.index('<dialog class="lightbox"'), html.index("</main>"))
+
     def test_neighbours_are_prefetched(self):
         response = self.client.get("/toolkit/")
         self.assertContains(response, '<link rel="prefetch" href="/about/">')
