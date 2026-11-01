@@ -84,7 +84,7 @@
     font-size: 0.72rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--color-pencil);
+    color: var(--color-muted);
   }
   .pager__arrow {
     display: inline-block;
@@ -239,7 +239,7 @@ html:active-view-transition-type(backward)::view-transition-old(sheet) {
     margin-bottom: 1.4rem;
   }
   .pager__leaf {
-    color: var(--color-pencil);
+    color: var(--color-muted);
   }
 }
 
