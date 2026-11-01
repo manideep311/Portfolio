@@ -24,6 +24,14 @@ class NotebookPageTests(TempMediaMixin, TestCase):
         self.assertContains(response, 'href="/toolkit/" rel="next"')
         self.assertContains(response, 'data-page-order="2"')
 
+    def test_pager_links_say_where_they_go(self):
+        # Server-rendered defaults are plain page links; site.js relabels them while a leaf remains.
+        response = self.client.get("/about/")
+        self.assertContains(response, 'data-turn="prev" aria-label="Previous page: Work"')
+        self.assertContains(response, 'data-turn="next" aria-label="Next page: Toolkit"')
+        self.assertContains(response, '<span data-turn-label><span class="pager__hint">next</span> Toolkit</span>', html=False)
+        self.assertContains(response, '<span data-turn-label><span class="pager__hint">back to</span> Work</span>', html=False)
+
     def test_cover_and_last_page_have_one_neighbour(self):
         cover = self.client.get("/")
         self.assertNotContains(cover, 'rel="prev"')
