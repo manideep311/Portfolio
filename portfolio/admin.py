@@ -141,7 +141,7 @@ class ProjectAdmin(admin.ModelAdmin):
             "Publishing",
             {
                 "fields": ("status", "is_featured", "order", "published_at", "created_at", "updated_at"),
-                "description": "Only published projects are visible publicly. Featured + published projects appear on the homepage.",
+                "description": "Only published projects are visible publicly. Featured ones are shown first on the Work page.",
             },
         ),
     )
@@ -192,17 +192,19 @@ class ProjectAdmin(admin.ModelAdmin):
         count = queryset.update(status=Project.Status.DRAFT, updated_at=timezone.now())
         self.message_user(request, f"{count} project(s) are drafts again and hidden from the site.", messages.SUCCESS)
 
-    @admin.action(description="Feature on homepage", permissions=["change"])
+    @admin.action(description="Show first on the Work page", permissions=["change"])
     def feature(self, request, queryset):
         count = queryset.update(is_featured=True, updated_at=timezone.now())
         self.message_user(
-            request, f"Featured {count} project(s). Remember: only published projects are shown.", messages.SUCCESS
+            request,
+            f"{count} project(s) will be shown first on the Work page. Remember: only published projects are shown.",
+            messages.SUCCESS,
         )
 
-    @admin.action(description="Remove from homepage", permissions=["change"])
+    @admin.action(description="Stop showing first on the Work page", permissions=["change"])
     def unfeature(self, request, queryset):
         count = queryset.update(is_featured=False, updated_at=timezone.now())
-        self.message_user(request, f"Removed {count} project(s) from the homepage.", messages.SUCCESS)
+        self.message_user(request, f"{count} project(s) are no longer shown first on the Work page.", messages.SUCCESS)
 
 
 # ---------------------------------------------------------------------------

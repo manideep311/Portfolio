@@ -15,9 +15,9 @@ Built with **Django 5.2**, **Tailwind CSS v4** and a little vanilla JavaScript.
 - Django Admin CMS with a draft/published workflow and inline screenshot uploads per project.
 - Upload validation by content sniffing (not just file extensions), with images re-encoded to WebP.
 - Nonce-based Content Security Policy on every public page.
-- 83 automated tests, run by GitHub Actions on every push and pull request.
+- 89 automated tests, run by GitHub Actions on every push and pull request.
 - Lighthouse 100 on desktop and 97 on mobile at the last audit.
-- axe accessibility checks: 0 violations.
+- axe-core: 0 violations on every page and leaf at 1440×900 and 390×844 (checked 1 November 2026).
 
 Everything on the public site — profile, projects, screenshots, skills,
 experience, education, certifications, links, the résumé PDF — is edited in the
@@ -47,8 +47,8 @@ the leaves stack and the page scrolls normally.
 | Backend | Django 5.2 LTS | Admin, auth, permissions, CSRF and forms for free; supported to April 2028 |
 | Frontend | Django templates + Tailwind CSS v4 + a hand-written CSS layer | Tailwind for layout and spacing, custom CSS for the paper, tape, polaroids and doodles |
 | Interactions | CSS animations + a few KB of vanilla JS (ES modules) | Reveals, parallax, the polaroid flip and the screenshot lightbox; no framework |
-| Content | Database (SQLite locally, PostgreSQL in production via `DATABASE_URL`) | Managed in Django Admin |
-| Media | Local `media/` in development, S3-compatible object storage in production | Uploads survive deploys |
+| Content | SQLite (the live site on PythonAnywhere too); PostgreSQL works via `DATABASE_URL` if you move | Managed in Django Admin |
+| Media | Local `media/` folder, served by PythonAnywhere; S3-compatible storage is optional via `AWS_*` | PythonAnywhere's disk persists between deploys |
 | Static files | WhiteNoise, hashed and Brotli/gzip pre-compressed | Cached forever, no extra server needed |
 | Contact | Email-only form stored privately in the database (+ optional email notification) | Messages are visible only to authorised staff |
 
@@ -65,6 +65,7 @@ pip install -r requirements.txt
 
 cp .env.example .env                 # DJANGO_DEBUG=1 is fine locally
 python manage.py migrate             # creates db.sqlite3 and the staff groups
+python manage.py createcachetable    # the table the contact-form rate limit uses
 python manage.py seed_portfolio      # loads the résumé content (only if the DB is empty)
 python manage.py createsuperuser     # your CMS login
 python manage.py runserver
@@ -89,7 +90,7 @@ npm run build:css        # or: npm run watch:css while you work
 DJANGO_DEBUG=1 python manage.py test portfolio
 ```
 
-The 83 tests cover models, upload validation (type, size and content
+The 89 tests cover models, upload validation (type, size and content
 sniffing), image optimisation, file cleanup, publish and visibility rules,
 draft previews, permissions and roles, CSRF, the honeypot, rate limiting,
 email notifications, the portrait film look, the sitemap and the seed command. They also run the full
@@ -106,11 +107,11 @@ Sign in at `/admin/` (or your `DJANGO_ADMIN_URL`).
 1. *Projects → Add project.* Fill in the title (the slug fills itself), the summary, the story, your contribution, outcomes and technologies (comma-separated, in display order).
 2. Under **Screenshots**, choose an image, add alt text (required) and an optional caption. "Add another Screenshot" adds more rows. Lower *display order* comes first.
 3. Optionally upload a **featured image** (with alt text). Without one, the card shows the hand-drawn sketch you pick in *Fallback sketch*.
-4. Under **Publishing**, set *Status = Published* and tick *Featured on homepage*. Leave *Published at* empty to publish now, or set a future date to schedule it.
+4. Under **Publishing**, set *Status = Published* and tick *Shown first on the Work page* if it should lead. Leave *Published at* empty to publish now, or set a future date to schedule it.
 5. Save. Use **View on site** or the *Public?* column to open it.
 
 **Day-to-day**
-- *Status*, *Featured* and *Display order* are editable straight from the project list. Bulk actions: publish, back to draft, feature, remove from homepage.
+- *Status*, *Featured* and *Display order* are editable straight from the project list. Bulk actions: publish, back to draft, show first on the Work page, stop showing first.
 - Drafts and scheduled projects return **404** to visitors. Signed-in staff with "view project" permission see a yellow *Draft preview* banner.
 - **Profile** is a single record: name, headline, intro, about story, availability stamp (leave empty to hide it), portrait, résumé PDF, email, and whether to show your phone number.
 - Skills (grouped, each group with its own visual style), work experience (with links), education, certifications, achievements, working principles (shown in About next to the work-loop sketch) and social links each have their own sections.
@@ -146,11 +147,11 @@ All settings come from environment variables (`.env` locally). See
 | `DJANGO_DEBUG` | `1` locally only. Off = HTTPS redirect, secure cookies, HSTS |
 | `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS` | Your domain(s) |
 | `SITE_URL` | Public URL for canonical links, Open Graph and the sitemap |
-| `DATABASE_URL` | PostgreSQL URL in production. Empty = SQLite |
-| `AWS_*` | S3 / R2 media storage. Empty bucket = local `media/` |
+| `DATABASE_URL` | Optional PostgreSQL URL. Empty = SQLite (what the live site uses) |
+| `AWS_*` | Optional S3 / R2 media storage. Empty bucket = local `media/` (what the live site uses) |
 | `DJANGO_ADMIN_URL` | Move the admin away from `/admin/` |
 | `CONTACT_NOTIFY_EMAIL` + `EMAIL_*` | Optional email when a new message arrives |
-| `TRUST_X_FORWARDED_FOR` | `1` behind a platform proxy so rate limiting sees real IPs |
+| `CLIENT_IP_HEADER` | Where the contact rate limit finds the visitor's IP: empty = `REMOTE_ADDR`, `X-Real-IP` on PythonAnywhere (the setup script sets it), `X-Forwarded-For` behind other proxies (only its rightmost entry, which your proxy added, is used) |
 
 **Security in place:** Django auth and permissions on every admin view; no
 registration route; CSRF on all forms; a nonce-based Content-Security-Policy on
@@ -190,43 +191,27 @@ click **Run until 3 months from today** on the Web tab every three months.
 ```bash
 bash ~/Portfolio/deploy/pythonanywhere_update.sh
 ```
-It pulls, installs, migrates, collects static files and reloads the site.
+It pulls, installs, migrates, creates the rate-limit cache table if it's
+missing, collects static files and reloads the site. Because the script pulls
+a new copy of itself, run `git -C ~/Portfolio pull` first when an update
+changes the script.
 
 **Backups:** download `db.sqlite3` and the `media/` folder from the Files tab
 now and then. Settings live in `~/Portfolio/.env`; press Reload after editing.
 On the free plan outgoing email is restricted, so new contact messages may not
 be emailed to you — they are always saved in the admin.
 
-### Render + PostgreSQL + Cloudflare R2
+### Moving to another host
 
-Render's filesystem is wiped on every deploy, so uploads must go to object
-storage. Cloudflare R2 has no egress fees and an S3-compatible API.
+The live site runs on PythonAnywhere with SQLite and local media. The settings
+also support other hosts: set `DATABASE_URL` for PostgreSQL, the `AWS_*`
+variables for S3-compatible media storage (needed wherever the filesystem is
+wiped on each deploy), and `CLIENT_IP_HEADER` for that host's proxy. Run
+`migrate`, `createcachetable` and `collectstatic` on every deploy.
 
-**1. Media bucket (R2)**
-1. Cloudflare dashboard → R2 → *Create bucket* (e.g. `manideep-portfolio`).
-2. *Settings → Public access*: connect a custom domain (e.g. `media.yourdomain.com`) or enable the `r2.dev` URL.
-3. *R2 → Manage API tokens → Create token* with Object Read & Write on that bucket. Note the access key ID, the secret, and the S3 endpoint `https://<account-id>.r2.cloudflarestorage.com`.
-
-**2. Render**
-1. Push this folder to a GitHub repository.
-2. Render → *New → Blueprint* → select the repo. `render.yaml` creates the PostgreSQL database and the web service.
-3. When prompted, fill in `AWS_STORAGE_BUCKET_NAME`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_S3_ENDPOINT_URL`, `AWS_S3_CUSTOM_DOMAIN` (the public domain from step 1) and `SITE_URL` (your final URL). Configure R2 **before** the first deploy, so the seeded résumé PDF lands in the bucket.
-4. Deploy. `build.sh` installs dependencies, runs `collectstatic` and `migrate`, and (because `SEED_ON_DEPLOY=1`) loads your résumé content once. Then set `SEED_ON_DEPLOY=0`.
-5. Create your login: Render service → *Shell* → `python manage.py createsuperuser`. If Shell isn't available on your plan, run the same command locally with `DATABASE_URL` set to the Render database's *External* URL.
-6. Custom domain: add it in Render, then add it to `DJANGO_ALLOWED_HOSTS` (e.g. `.onrender.com,yourdomain.com`), `DJANGO_CSRF_TRUSTED_ORIGINS` (`https://yourdomain.com`) and `SITE_URL`.
-
-**Database migrations** run on every deploy (`build.sh`). For model changes
-locally: `python manage.py makemigrations && python manage.py migrate`, then
-commit the new migration files.
-
-**Plans:** Render's free web instances sleep when idle, which makes the first
-visit slow, and free databases expire. For a portfolio you send to recruiters,
-use the smallest paid web instance and database.
-
-**Other hosts**
-- *Railway / Heroku-style:* `Procfile` runs migrations on release. Attach PostgreSQL and set the same env vars.
-- *Fly.io / any container host:* the `Dockerfile` builds the CSS, installs Python deps, collects static files and runs migrations on start. (It couldn't be built in the environment where this project was made, so give it one local `docker build .` first.)
-- *A single VPS with a persistent disk:* object storage is optional. Set `SERVE_MEDIA=1` and point `MEDIA_ROOT` at the persistent volume.
+**Database migrations:** for model changes locally, run
+`python manage.py makemigrations && python manage.py migrate`, then commit the
+new migration files. The PythonAnywhere update script applies them.
 
 ---
 
@@ -247,21 +232,13 @@ portfolio/
   templatetags/notebook.py   doodles, safe text formatting, project visuals, JSON-LD
   templates/portfolio/  pages, sections (partials/) and hand-drawn project sketches (art/)
   management/commands/seed_portfolio.py
-  tests/                83 tests
+  tests/                89 tests
 templates/              base layout, 404/500, admin branding
 assets/css/             Tailwind entry + scrapbook component CSS (source)
 static/                 compiled CSS, JS, fonts (self-hosted), textures, icons
 seed/                   portrait (and your git-ignored résumé PDF) used by seed_portfolio
 deploy/                 PythonAnywhere setup and update scripts
 ```
-
-## Content still needed from you
-
-- **Real project screenshots.** Each project uses a labelled hand-drawn diagram (never presented as a screenshot). Add real screenshots per project, and a featured image if you like.
-- **Source links** for Vastra, NextCinema and the Uniform Detection project. Only the Falcon 9 repository was linked in the résumé.
-- **Measured outcomes** (accuracy, latency, user numbers). None were in the résumé, so none are shown.
-- **Your final domain.** Set it in `SITE_URL` for canonical and Open Graph URLs.
-- **Phone number.** The seed leaves it blank. Add it in the profile and tick *Show phone* only if you want it public.
 
 ## Credits
 

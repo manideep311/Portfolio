@@ -161,15 +161,6 @@
       var(--paper-white);
     box-shadow: var(--shadow-paper);
   }
-  .paper-graph {
-    background:
-      linear-gradient(var(--rule) 1px, transparent 1px) 0 0 / 18px 18px,
-      linear-gradient(90deg, var(--rule) 1px, transparent 1px) 0 0 / 18px 18px,
-      var(--grain) 0 0 / 220px 220px,
-      var(--paper-white);
-    box-shadow: var(--shadow-paper);
-  }
-
   /* Section headings */
   .kicker {
     display: flex;

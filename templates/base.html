@@ -58,7 +58,7 @@
 
   <div class="window" id="top">
     {% include "portfolio/partials/frame_chrome.html" %}
-    <div class="page sheet" data-sheet>
+    <div class="page sheet" data-sheet tabindex="0">
       <main id="main" tabindex="-1">
         {% block content %}{% endblock %}
       </main>
@@ -66,6 +66,8 @@
     </div>
     {% include "portfolio/partials/pager.html" %}
   </div>
+  {# Outside the zoomed sheet, so dialogs such as the screenshot viewer show at full size. #}
+  {% block after_main %}{% endblock %}
   <script nonce="{{ request.csp_nonce }}">
     // Before the first paint: show only the active leaf, then scale the sheet
     // to fit if it's a little too tall. site.js reuses notebookFit when turning.

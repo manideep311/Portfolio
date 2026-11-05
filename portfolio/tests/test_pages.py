@@ -24,6 +24,18 @@ class NotebookPageTests(TempMediaMixin, TestCase):
         self.assertContains(response, 'href="/toolkit/" rel="next"')
         self.assertContains(response, 'data-page-order="2"')
 
+    def test_pager_links_say_where_they_go(self):
+        # Server-rendered defaults are plain page links; site.js relabels them while a leaf remains.
+        response = self.client.get("/about/")
+        self.assertContains(response, 'data-turn="prev" aria-label="Previous page: Work"')
+        self.assertContains(response, 'data-turn="next" aria-label="Next page: Toolkit"')
+        self.assertContains(
+            response, '<span data-turn-label><span class="pager__hint">next</span> Toolkit</span>', html=False
+        )
+        self.assertContains(
+            response, '<span data-turn-label><span class="pager__hint">back to</span> Work</span>', html=False
+        )
+
     def test_cover_and_last_page_have_one_neighbour(self):
         cover = self.client.get("/")
         self.assertNotContains(cover, 'rel="prev"')
@@ -39,6 +51,10 @@ class NotebookPageTests(TempMediaMixin, TestCase):
         self.assertContains(response, 'href="/about/" rel="next"')
         self.assertContains(response, 'data-page-order="1.5"')
         self.assertContains(response, '<a href="/work/" aria-current="page">')
+
+    def test_screenshot_viewer_sits_outside_the_zoomed_sheet(self):
+        html = self.client.get(make_project(title="Deep Dive").get_absolute_url()).content.decode()
+        self.assertGreater(html.index('<dialog class="lightbox"'), html.index("</main>"))
 
     def test_neighbours_are_prefetched(self):
         response = self.client.get("/toolkit/")

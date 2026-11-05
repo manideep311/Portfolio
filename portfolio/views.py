@@ -100,12 +100,18 @@ def project_detail(request, slug):
     return response
 
 
+def _client_ip(request) -> str:
+    header = settings.CLIENT_IP_HEADER
+    if header:
+        # Proxies append to the header, so only the rightmost entry is trustworthy.
+        value = request.META.get("HTTP_" + header.upper().replace("-", "_"), "").split(",")[-1].strip()
+        if value:
+            return value
+    return request.META.get("REMOTE_ADDR", "")
+
+
 def _client_fingerprint(request) -> str:
-    ip = request.META.get("REMOTE_ADDR", "")
-    if settings.TRUST_X_FORWARDED_FOR:
-        forwarded = request.META.get("HTTP_X_FORWARDED_FOR", "")
-        if forwarded:
-            ip = forwarded.split(",")[0].strip()
+    ip = _client_ip(request)
     return hashlib.sha256(f"{ip}{settings.SECRET_KEY}".encode()).hexdigest()[:32]
 
 

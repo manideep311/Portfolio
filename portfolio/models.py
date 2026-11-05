@@ -390,7 +390,7 @@ class Project(OrderedModel, TimeStampedModel):
     extra_link_label = models.CharField(max_length=60, blank=True)
     extra_link_url = models.URLField(blank=True)
 
-    is_featured = models.BooleanField("featured on homepage", default=False)
+    is_featured = models.BooleanField("shown first on the Work page", default=False)
     status = models.CharField(max_length=12, choices=Status.choices, default=Status.DRAFT, db_index=True)
     published_at = models.DateTimeField(
         null=True,

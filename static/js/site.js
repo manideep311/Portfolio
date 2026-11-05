@@ -39,7 +39,27 @@ const OLD_SECTION_LINKS = {
 const FIT_QUERY = '(min-width: 64rem) and (min-height: 37.5rem)';
 const canTypeTransitions = typeof ViewTransition !== 'undefined' && 'types' in ViewTransition.prototype;
 
-function initLeaves() {
+// While another leaf remains that way, a pager link turns the leaf, so its text,
+// label and href say so; otherwise it is the plain link to the neighbouring page.
+function pagerLink(link) {
+  if (!link) return () => {};
+  const label = link.querySelector('[data-turn-label]');
+  const page = { href: link.getAttribute('href'), aria: link.getAttribute('aria-label'), html: label?.innerHTML };
+  const hint = link.dataset.turn === 'next' ? 'next:' : 'back to';
+  return (leaf, count, pageHref = page.href) => {
+    if (leaf) {
+      link.setAttribute('href', `#leaf-${leaf}`);
+      link.setAttribute('aria-label', `${link.dataset.turn === 'next' ? 'Next' : 'Previous'} leaf: ${leaf} of ${count}`);
+      if (label) label.innerHTML = `<span class="pager__hint">${hint}</span> leaf ${leaf} of ${count}`;
+    } else {
+      link.setAttribute('href', pageHref);
+      link.setAttribute('aria-label', page.aria);
+      if (label) label.innerHTML = page.html;
+    }
+  };
+}
+
+function initLeaves({ prev, next, ear }) {
   const root = document.documentElement;
   const sheet = document.querySelector('[data-sheet]');
   const parts = [...document.querySelectorAll('[data-leaf]')];
@@ -54,11 +74,20 @@ function initLeaves() {
   let current = fromHash();
 
   const leafed = () => fit.matches && count > 1;
+  const setNext = pagerLink(next);
+  const setPrev = pagerLink(prev);
+  const earHref = ear?.getAttribute('href');
+  const prevHref = prev?.getAttribute('href');
   const render = () => {
     const on = leafed();
     root.classList.toggle('is-leafed', on);
     parts.forEach((el) => el.toggleAttribute('data-leaf-hidden', on && Number(el.dataset.leaf) !== current));
-    if (status) status.textContent = on ? ` · leaf ${current} of ${count}` : '';
+    if (status) status.textContent = on ? ` · leaf ${current} of ${count}${current < count ? ', more on the next' : ''}` : '';
+    const nextLeaf = on && current < count ? current + 1 : 0;
+    setNext(nextLeaf, count);
+    ear?.setAttribute('href', nextLeaf ? `#leaf-${nextLeaf}` : earHref);
+    // On a big screen, going back from a first leaf opens the previous page at its last leaf.
+    setPrev(on && current > 1 ? current - 1 : 0, count, prevHref && fit.matches ? `${prevHref}#last` : prevHref);
     if (sheet) sheet.scrollTop = 0;
     window.notebookFit?.();
   };
@@ -115,26 +144,20 @@ function initPageTurns() {
     return;
   }
 
-  const turnLeaf = initLeaves();
   const prev = document.querySelector('[data-turn="prev"]');
   const next = document.querySelector('[data-turn="next"]');
+  const ear = document.querySelector('[data-turn-ear]');
+  const turnLeaf = initLeaves({ prev, next, ear });
 
-  // Turn the next leaf if there is one, otherwise follow the link to the next page.
-  next?.addEventListener('click', (e) => {
-    if (turnLeaf('next')) e.preventDefault();
-  });
-  document.querySelector('[data-turn-ear]')?.addEventListener('click', (e) => {
-    if (turnLeaf('next')) e.preventDefault();
-  });
-  // Turning back from a page's first leaf lands on the previous page's last leaf.
-  prev?.addEventListener('click', (e) => {
-    if (turnLeaf('prev')) {
-      e.preventDefault();
-    } else if (document.documentElement.classList.contains('is-leafed') || window.matchMedia(FIT_QUERY).matches) {
-      e.preventDefault();
-      location.href = prev.href.split('#')[0] + '#last';
-    }
-  });
+  // A plain click turns the leaf in place; anything else is left to the browser, so
+  // Ctrl/Cmd/Shift-click and middle-click open the link (and its #leaf-N) as usual.
+  const turnOnClick = (direction) => (e) => {
+    if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    if (turnLeaf(direction)) e.preventDefault();
+  };
+  next?.addEventListener('click', turnOnClick('next'));
+  ear?.addEventListener('click', turnOnClick('next'));
+  prev?.addEventListener('click', turnOnClick('prev'));
 
   const go = (link) => link && link.click();
   document.addEventListener('keydown', (e) => {
@@ -152,7 +175,7 @@ function initPageTurns() {
     'touchstart',
     (e) => {
       const t = e.touches[0];
-      start = e.touches.length === 1 && !e.target.closest('input, textarea, [data-no-swipe]') ? { x: t.clientX, y: t.clientY } : null;
+      start = e.touches.length === 1 && !e.target.closest('input, textarea') ? { x: t.clientX, y: t.clientY } : null;
     },
     { passive: true },
   );
@@ -251,38 +274,6 @@ function initFlip() {
   card.addEventListener('click', toggle);
 }
 
-/* ---------- Gentle card tilt (desktop) ---------- */
-function initTilt() {
-  if (reduceMotion || !finePointer) return;
-  document.querySelectorAll('[data-tilt]').forEach((el) => {
-    let rect = null;
-    let frame = 0;
-    let x = 0;
-    let y = 0;
-    const update = () => {
-      frame = 0;
-      if (!rect) return;
-      const rx = ((y - rect.top) / rect.height - 0.5) * -7;
-      const ry = ((x - rect.left) / rect.width - 0.5) * 9;
-      el.style.setProperty('--rx', `${rx.toFixed(2)}deg`);
-      el.style.setProperty('--ry', `${ry.toFixed(2)}deg`);
-    };
-    el.addEventListener('pointerenter', () => {
-      rect = el.getBoundingClientRect();
-    });
-    el.addEventListener('pointermove', (e) => {
-      x = e.clientX;
-      y = e.clientY;
-      if (!frame) frame = requestAnimationFrame(update);
-    });
-    el.addEventListener('pointerleave', () => {
-      rect = null;
-      el.style.setProperty('--rx', '0deg');
-      el.style.setProperty('--ry', '0deg');
-    });
-  });
-}
-
 /* ---------- Copy email ---------- */
 function initCopy() {
   document.querySelectorAll('[data-copy]').forEach((button) => {
@@ -342,6 +333,5 @@ initReveals();
 initMenu();
 initHeroPointer();
 initFlip();
-initTilt();
 initCopy();
 initLightbox();

@@ -59,6 +59,33 @@ class ContactFormTests(TestCase):
         self.assertEqual(response.status_code, 429)
         self.assertEqual(ContactMessage.objects.count(), 3)
 
+    def _post_from(self, n, **meta):
+        return [self.client.post(self.url, VALID, **meta).status_code for _ in range(n)]
+
+    @override_settings(CONTACT_RATE_LIMIT=2, CLIENT_IP_HEADER="X-Forwarded-For", TRUST_X_FORWARDED_FOR=True)
+    def test_spoofed_forwarded_for_entries_dont_reset_the_limit(self):
+        # The client controls everything left of the proxy's own (rightmost) entry.
+        codes = [
+            self.client.post(self.url, VALID, HTTP_X_FORWARDED_FOR=f"10.0.0.{i}, 203.0.113.7").status_code
+            for i in range(3)
+        ]
+        self.assertEqual(codes, [302, 302, 429])
+
+    @override_settings(CONTACT_RATE_LIMIT=1, CLIENT_IP_HEADER="X-Real-IP")
+    def test_x_real_ip_separates_visitors_behind_one_proxy(self):
+        self.assertEqual(self._post_from(2, HTTP_X_REAL_IP="203.0.113.7"), [302, 429])
+        self.assertEqual(self._post_from(1, HTTP_X_REAL_IP="198.51.100.4"), [302])
+
+    @override_settings(CONTACT_RATE_LIMIT=1, CLIENT_IP_HEADER="")
+    def test_headers_are_ignored_unless_configured(self):
+        self.assertEqual(self._post_from(1, HTTP_X_REAL_IP="203.0.113.7"), [302])
+        self.assertEqual(self._post_from(1, HTTP_X_REAL_IP="198.51.100.4"), [429])
+
+    def test_rate_limit_counters_are_shared_through_the_database(self):
+        from django.conf import settings
+
+        self.assertEqual(settings.CACHES["default"]["BACKEND"], "django.core.cache.backends.db.DatabaseCache")
+
     @override_settings(
         CONTACT_NOTIFY_EMAIL="owner@example.com", EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"
     )
